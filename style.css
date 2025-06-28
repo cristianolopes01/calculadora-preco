@@ -1,49 +1,61 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #f4f8fb;
+  margin: 0 auto;
+  padding: 30px;
+  background: #f9fbfd;
   color: #333;
 }
-h1, h2 {
+h1, h2, h3 {
   color: #2c3e50;
+  margin-bottom: 10px;
 }
 .bloco {
   background: #fff;
   padding: 20px;
-  margin: 20px 0;
+  margin-bottom: 30px;
   border-radius: 8px;
-  box-shadow: 0px 1px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 label {
   display: block;
-  margin: 10px 0 5px;
+  margin: 8px 0 12px;
 }
 input {
   width: 100%;
   padding: 8px;
   font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 button {
-  padding: 10px 16px;
-  font-weight: bold;
+  margin-top: 15px;
+  padding: 10px 20px;
   background: #3498db;
-  color: white;
+  color: #fff;
+  font-weight: bold;
   border: none;
   border-radius: 5px;
-  margin: 10px 10px 0 0;
   cursor: pointer;
 }
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
+button:hover {
+  background: #2980b9;
 }
-td, th {
-  border: 1px solid #ccc;
-  padding: 8px;
+.result-price {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 15px 0;
 }
-th {
-  background: #ecf0f1;
+.result-detail {
+  margin-bottom: 8px;
+}
+.result-detail span {
+  float: right;
+  font-weight: bold;
+}
+canvas {
+  margin-top: 20px;
+}
+.mostrar {
+  display: block !important;
 }
