@@ -2,12 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const calcular = document.getElementById("calcular");
   const limpar = document.getElementById("limpar");
 
-  calcular.addEventListener("click", () => {
+  // === Função principal de cálculo ===
+  const executarCalculo = () => {
     const precoCompra = parseFloat(document.getElementById("preco-compra").value) || 0;
     const precoVenda = parseFloat(document.getElementById("preco-venda").value) || 0;
     const diasUteis = parseInt(document.getElementById("dias-uteis").value) || 22;
 
-    // === Custos Fixos ===
     const fixosIds = [
       { id: "fixo-aluguel", nome: "Aluguel" },
       { id: "fixo-energia", nome: "Energia Elétrica" },
@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     fixos.forEach(f => f.percentual = totalFixos > 0 ? (f.valor / totalFixos) * 100 : 0);
 
-    // === Custos Variáveis ===
     const variaveisIds = [
       { id: "variavel-producao", nome: "Custo de Aquisição/Produção" },
       { id: "variavel-impostos", nome: "Impostos sobre faturamento" },
@@ -70,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const peDiarioUnidades = diasUteis > 0 ? peUnidades / diasUteis : 0;
     const peDiarioReais = (margemLiquida > 0 && diasUteis > 0) ? totalFixos / (margemLiquida / 100) / diasUteis : 0;
 
-    // === RELATÓRIOS ===
+    // Relatório Preço
     document.getElementById("relatorio-preco").innerHTML = `
       <h3>📋 Preços e Margens</h3>
       <table>
@@ -107,12 +106,14 @@ document.addEventListener("DOMContentLoaded", () => {
       <table>
         <tr><td>Mensal (Unidades)</td><td>${Math.ceil(peUnidades)}</td></tr>
         <tr><td>Diário (Unidades)</td><td>${Math.ceil(peDiarioUnidades)}</td></tr>
-        <tr><td>Faturamento Diário Necessário</td><td>R$ ${peDiarioReais.toFixed(2)}</td></tr>
+        <tr><td>Faturamento Diário</td><td>R$ ${peDiarioReais.toFixed(2)}</td></tr>
       </table>
     `;
 
     document.getElementById("resultados").style.display = "block";
-  });
+  };
+
+  calcular.addEventListener("click", executarCalculo);
 
   limpar.addEventListener("click", () => {
     document.querySelectorAll("input").forEach(input => input.value = "");
@@ -120,5 +121,10 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById(id).innerHTML = "";
     });
     document.getElementById("resultados").style.display = "none";
+  });
+
+  // === CÁLCULO AUTOMÁTICO EM TEMPO REAL ===
+  document.querySelectorAll("input[type='number']").forEach(input => {
+    input.addEventListener("input", executarCalculo);
   });
 });
