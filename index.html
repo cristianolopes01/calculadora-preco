@@ -6,10 +6,12 @@
   <title>Calculadora de Precificação</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
   <h1>📊 Calculadora de Precificação</h1>
 
+  <!-- Custos Fixos -->
   <section>
     <h2>💡 Custos Fixos (mensal)</h2>
     <div class="campo"><label>Aluguel: <input type="number" id="c-aluguel" /></label></div>
@@ -25,25 +27,35 @@
     <p><strong>Total de Custos Fixos:</strong> <span id="total-fixos">R$ 0,00</span></p>
   </section>
 
+  <!-- Custos Variáveis -->
   <section>
     <h2>📉 Custos Variáveis (% sobre venda)</h2>
-    <div class="campo"><label>Impostos: <input type="number" id="v-impostos" /></label></div>
+    <div class="campo"><label>Custo de Aquisição/Produção: <input type="number" id="v-aquisicao" /></label></div>
+    <div class="campo"><label>Impostos sobre faturamento: <input type="number" id="v-impostos" /></label></div>
     <div class="campo"><label>Comissões de Vendas: <input type="number" id="v-comissao" /></label></div>
-    <div class="campo"><label>Taxa de Cartão: <input type="number" id="v-cartao" /></label></div>
-    <div class="campo"><label>Descontos: <input type="number" id="v-descontos" /></label></div>
+    <div class="campo"><label>Taxa de Cartão – Débito: <input type="number" id="v-cartao-debito" /></label></div>
+    <div class="campo"><label>Taxa de Cartão – Crédito: <input type="number" id="v-cartao-credito" /></label></div>
+    <div class="campo"><label>Fretes: <input type="number" id="v-fretes" /></label></div>
+    <div class="campo"><label>Taxa de Antecipação: <input type="number" id="v-antecipacao" /></label></div>
+    <div class="campo"><label>Desconto de Vendas: <input type="number" id="v-descontos" /></label></div>
+    <div class="campo"><label>Outros Custos Variáveis: <input type="number" id="v-outros" /></label></div>
     <p><strong>Total de Custos Variáveis:</strong> <span id="total-variaveis">0%</span></p>
   </section>
 
+  <!-- Parâmetros -->
   <section>
     <h2>⚙️ Parâmetros</h2>
-    <div class="campo"><label>Custo de Aquisição: <input type="number" id="p-custo" /></label></div>
     <div class="campo"><label>Frete por Unidade: <input type="number" id="p-frete" /></label></div>
     <div class="campo"><label>Unidades Vendidas por Mês: <input type="number" id="p-vendas" /></label></div>
     <div class="campo"><label>Margem de Lucro Desejada (%): <input type="number" id="p-margem" /></label></div>
   </section>
 
-  <button id="calcular">Calcular</button>
+  <!-- Botões -->
+  <div class="botoes">
+    <button id="calcular">Calcular</button>
+  </div>
 
+  <!-- Resultados -->
   <section id="resultado" class="card">
     <h2>📋 Resultado</h2>
     <div id="saida"></div>
@@ -51,6 +63,5 @@
   </section>
 
   <script src="script.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </body>
 </html>
