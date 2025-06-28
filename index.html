@@ -23,23 +23,23 @@
     <div class="campo"><label for="c-contabilidade">Contabilidade:</label><input id="c-contabilidade" type="number" /></div>
     <div class="campo"><label for="c-depreciacao">Depreciação:</label><input id="c-depreciacao" type="number" /></div>
     <div class="campo"><label for="c-internet">Internet:</label><input id="c-internet" type="number" /></div>
-    <div class="campo"><label for="c-outros-fixos">Outros:</label><input id="c-outros-fixos" type="number" /></div>
+    <div class="campo"><label for="c-outros-fixos">Outros Fixos:</label><input id="c-outros-fixos" type="number" /></div>
   </section>
 
   <section class="input-section">
     <h2>Custos Variáveis (% do preço)</h2>
     <div class="campo"><label for="v-impostos">Impostos (%):</label><input id="v-impostos" type="number" /></div>
     <div class="campo"><label for="v-comissao">Comissão (%):</label><input id="v-comissao" type="number" /></div>
-    <div class="campo"><label for="v-taxa-cartao">Taxa Cartão (%):</label><input id="v-taxa-cartao" type="number" /></div>
+    <div class="campo"><label for="v-taxa-cartao">Taxa do Cartão (%):</label><input id="v-taxa-cartao" type="number" /></div>
     <div class="campo"><label for="v-descontos">Descontos (%):</label><input id="v-descontos" type="number" /></div>
   </section>
 
   <section class="input-section">
     <h2>Dados do Produto</h2>
-    <div class="campo"><label for="p-custo-aquisicao">Custo Aquisição:</label><input id="p-custo-aquisicao" type="number" /></div>
-    <div class="campo"><label for="p-frete">Frete Unitário:</label><input id="p-frete" type="number" /></div>
-    <div class="campo"><label for="p-vendas-mes">Vendas/Mês:</label><input id="p-vendas-mes" type="number" /></div>
-    <div class="campo"><label for="p-margem-lucro">Margem Lucro (%):</label><input id="p-margem-lucro" type="number" /></div>
+    <div class="campo"><label for="p-custo-aquisicao">Custo de Aquisição:</label><input id="p-custo-aquisicao" type="number" /></div>
+    <div class="campo"><label for="p-frete">Frete por unidade:</label><input id="p-frete" type="number" /></div>
+    <div class="campo"><label for="p-vendas-mes">Vendas/mês:</label><input id="p-vendas-mes" type="number" /></div>
+    <div class="campo"><label for="p-margem-lucro">Margem de Lucro (%):</label><input id="p-margem-lucro" type="number" /></div>
   </section>
 
   <button id="calculate-btn">Calcular Preço de Venda</button>
@@ -48,6 +48,12 @@
     <div id="result-content"></div>
     <canvas id="grafico" width="400" height="400"></canvas>
   </section>
+
+  <footer class="rodape">
+    <p>© <span id="ano-atual"></span> Tausystem do Brasil LTDA</p>
+    <p>CNPJ: 20.046.813/0001-20</p>
+    <p><a href="https://www.linkedin.com/company/tausystem/" target="_blank">LinkedIn Oficial</a></p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
