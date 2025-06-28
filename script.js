@@ -1,54 +1,114 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculadora de Preço de Venda | Tausystem</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-  <header class="topo">
-    <img src="logo-tausystem.png" alt="Logo Tausystem" class="logo" />
-    <h1>Calculadora de Preço de Venda</h1>
-  </header>
+document.getElementById('calcular').addEventListener('click', function () {
+  // IDs de custos fixos
+  const fixosIds = [
+    'c-aluguel', 'c-energia', 'c-agua', 'c-telefonia', 'c-internet',
+    'c-pessoal', 'c-socios', 'c-contabilidade', 'c-depreciacao', 'c-outros'
+  ];
+  let totalFixos = 0;
+  fixosIds.forEach(id => {
+    totalFixos += parseFloat(document.getElementById(id).value) || 0;
+  });
+  document.getElementById('total-fixos').textContent = totalFixos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-  <section class="input-section">
-    <h2>Custos Fixos (mensal)</h2>
-    <div class="campo"><label for="c-energia">Energia:</label><input id="c-energia" type="number" /></div>
-    <div class="campo"><label for="c-agua">Água:</label><input id="c-agua" type="number" /></div>
-    <div class="campo"><label for="c-telefonia">Telefonia:</label><input id="c-telefonia" type="number" /></div>
-    <div class="campo"><label for="c-pessoal">Pessoal:</label><input id="c-pessoal" type="number" /></div>
-    <div class="campo"><label for="c-socios">Pró-labore/Sócios:</label><input id="c-socios" type="number" /></div>
-    <div class="campo"><label for="c-contabilidade">Contabilidade:</label><input id="c-contabilidade" type="number" /></div>
-    <div class="campo"><label for="c-depreciacao">Depreciação:</label><input id="c-depreciacao" type="number" /></div>
-    <div class="campo"><label for="c-internet">Internet:</label><input id="c-internet" type="number" /></div>
-    <div class="campo"><label for="c-outros-fixos">Outros:</label><input id="c-outros-fixos" type="number" /></div>
-  </section>
+  // Variáveis
+  const impostos = parseFloat(document.getElementById('v-impostos').value) || 0;
+  const comissao = parseFloat(document.getElementById('v-comissao').value) || 0;
+  const cartao = parseFloat(document.getElementById('v-cartao').value) || 0;
+  const descontos = parseFloat(document.getElementById('v-descontos').value) || 0;
+  const totalVariaveisPerc = impostos + comissao + cartao + descontos;
+  document.getElementById('total-variaveis').textContent = totalVariaveisPerc.toFixed(2) + '%';
 
-  <section class="input-section">
-    <h2>Custos Variáveis (% do preço)</h2>
-    <div class="campo"><label for="v-impostos">Impostos (%):</label><input id="v-impostos" type="number" /></div>
-    <div class="campo"><label for="v-comissao">Comissão (%):</label><input id="v-comissao" type="number" /></div>
-    <div class="campo"><label for="v-taxa-cartao">Taxa Cartão (%):</label><input id="v-taxa-cartao" type="number" /></div>
-    <div class="campo"><label for="v-descontos">Descontos (%):</label><input id="v-descontos" type="number" /></div>
-  </section>
+  // Parâmetros
+  const custoAquisicao = parseFloat(document.getElementById('p-custo').value) || 0;
+  const freteUnidade = parseFloat(document.getElementById('p-frete').value) || 0;
+  const vendasMes = parseInt(document.getElementById('p-vendas').value) || 0;
+  const margemLucro = parseFloat(document.getElementById('p-margem').value) || 0;
 
-  <section class="input-section">
-    <h2>Dados do Produto</h2>
-    <div class="campo"><label for="p-custo-aquisicao">Custo Aquisição:</label><input id="p-custo-aquisicao" type="number" /></div>
-    <div class="campo"><label for="p-frete">Frete Unitário:</label><input id="p-frete" type="number" /></div>
-    <div class="campo"><label for="p-vendas-mes">Vendas/Mês:</label><input id="p-vendas-mes" type="number" /></div>
-    <div class="campo"><label for="p-margem-lucro">Margem Lucro (%):</label><input id="p-margem-lucro" type="number" /></div>
-  </section>
+  if (!custoAquisicao || !vendasMes || !margemLucro) {
+    alert('Preencha todos os parâmetros obrigatórios.');
+    return;
+  }
 
-  <button id="calculate-btn">Calcular Preço de Venda</button>
+  const custoFixoUnit = totalFixos / vendasMes;
+  const custoTotalUnit = custoAquisicao + freteUnidade + custoFixoUnit;
+  const somaPercentuais = (totalVariaveisPerc + margemLucro) / 100;
 
-  <section id="result-card">
-    <div id="result-content"></div>
-    <canvas id="grafico" width="400" height="400"></canvas>
-  </section>
+  if (somaPercentuais >= 1) {
+    alert('A soma dos percentuais não pode ser maior ou igual a 100%.');
+    return;
+  }
 
-  <script src="script.js"></script>
-</body>
-</html>
+  const precoVenda = custoTotalUnit / (1 - somaPercentuais);
+  const valorImpostos = precoVenda * (impostos / 100);
+  const valorComissao = precoVenda * (comissao / 100);
+  const valorCartao = precoVenda * (cartao / 100);
+  const valorLucro = precoVenda * (margemLucro / 100);
+
+  const saida = document.getElementById('saida');
+  saida.innerHTML = `
+    <p><strong>Preço de Venda Sugerido:</strong> R$ ${precoVenda.toFixed(2)}</p>
+    <p><strong>Composição do Preço:</strong></p>
+    <p>🧾 Custo de Aquisição: R$ ${custoAquisicao.toFixed(2)}</p>
+    <p>🚚 Frete por Unidade: R$ ${freteUnidade.toFixed(2)}</p>
+    <p>🏢 Rateio de Custos Fixos por Unidade: R$ ${custoFixoUnit.toFixed(2)}</p>
+    <p>📉 Impostos + Comissão + Cartão: R$ ${(valorImpostos + valorComissao + valorCartao).toFixed(2)}</p>
+    <p>💰 Lucro Estimado: R$ ${valorLucro.toFixed(2)} (${margemLucro.toFixed(2)}%)</p>
+  `;
+
+  document.getElementById('resultado').style.display = 'block';
+
+  // Gráfico
+  const ctx = document.getElementById('grafico').getContext('2d');
+  if (window.meuGrafico) window.meuGrafico.destroy();
+  window.meuGrafico = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Aquisição', 'Frete', 'Fixos', 'Impostos/Taxas', 'Lucro'],
+      datasets: [{
+        data: [
+          custoAquisicao,
+          freteUnidade,
+          custoFixoUnit,
+          valorImpostos + valorComissao + valorCartao,
+          valorLucro
+        ],
+        backgroundColor: ['#4CAF50', '#FFC107', '#FF9800', '#F44336', '#2196F3']
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+});
+
+// Botão limpar
+const limpar = document.createElement('button');
+limpar.textContent = 'Limpar';
+limpar.style.marginLeft = '1rem';
+limpar.onclick = () => {
+  document.querySelectorAll('input').forEach(el => el.value = '');
+  document.getElementById('total-fixos').textContent = 'R$ 0,00';
+  document.getElementById('total-variaveis').textContent = '0%';
+  document.getElementById('saida').innerHTML = '';
+  document.getElementById('resultado').style.display = 'none';
+};
+document.getElementById('calcular').after(limpar);
+
+// Botão Exportar PDF
+const exportar = document.createElement('button');
+exportar.textContent = 'Exportar PDF';
+exportar.style.marginLeft = '1rem';
+exportar.onclick = () => {
+  const elemento = document.getElementById('resultado');
+  const opt = {
+    margin: 0.5,
+    filename: 'relatorio_precificacao.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(elemento).save();
+};
+document.getElementById('calcular').after(exportar);
