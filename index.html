@@ -11,43 +11,23 @@
 <body>
   <h1>📊 Calculadora de Precificação</h1>
 
-  <!-- Custos Fixos -->
   <section>
-    <h2>💡 Custos Fixos (mensal)</h2>
-    <div class="campo"><label>Aluguel: <input type="number" id="c-aluguel" /></label></div>
-    <div class="campo"><label>Energia Elétrica: <input type="number" id="c-energia" /></label></div>
-    <div class="campo"><label>Água: <input type="number" id="c-agua" /></label></div>
-    <div class="campo"><label>Telefonia: <input type="number" id="c-telefonia" /></label></div>
-    <div class="campo"><label>Internet: <input type="number" id="c-internet" /></label></div>
-    <div class="campo"><label>Pessoal: <input type="number" id="c-pessoal" /></label></div>
-    <div class="campo"><label>Remuneração Sócios: <input type="number" id="c-socios" /></label></div>
-    <div class="campo"><label>Contabilidade: <input type="number" id="c-contabilidade" /></label></div>
-    <div class="campo"><label>Depreciações: <input type="number" id="c-depreciacao" /></label></div>
-    <div class="campo"><label>Outros Fixos: <input type="number" id="c-outros" /></label></div>
-    <p><strong>Total de Custos Fixos:</strong> <span id="total-fixos">R$ 0,00</span></p>
+    <h2>💡 Custos Fixos (R$)</h2>
+    <div id="fixos-container"></div>
+    <p><strong>Total:</strong> <span id="total-fixos">R$ 0,00</span></p>
   </section>
 
-  <!-- Custos Variáveis -->
   <section>
     <h2>📉 Custos Variáveis (% sobre venda)</h2>
-    <div class="campo"><label>Custo de Aquisição/Produção: <input type="number" id="v-aquisicao" /></label></div>
-    <div class="campo"><label>Impostos sobre faturamento: <input type="number" id="v-impostos" /></label></div>
-    <div class="campo"><label>Comissões de Vendas: <input type="number" id="v-comissao" /></label></div>
-    <div class="campo"><label>Taxa de Cartão – Débito: <input type="number" id="v-cartao-debito" /></label></div>
-    <div class="campo"><label>Fretes: <input type="number" id="v-fretes" /></label></div>
-    <div class="campo"><label>Taxa de Antecipação: <input type="number" id="v-antecipacao" /></label></div>
-    <div class="campo"><label>Desconto de Vendas: <input type="number" id="v-descontos" /></label></div>
-    <div class="campo"><label>Outros Custos Variáveis: <input type="number" id="v-outros" /></label></div>
-    <div class="campo"><label>Taxa de Cartão – Crédito: <input type="number" id="v-cartao-credito" /></label></div>
-    <p><strong>Total de Custos Variáveis:</strong> <span id="total-variaveis">0%</span></p>
+    <div id="variaveis-container"></div>
+    <p><strong>Total:</strong> <span id="total-variaveis">0%</span></p>
   </section>
 
-  <!-- Parâmetros -->
   <section>
     <h2>⚙️ Parâmetros</h2>
-    <div class="campo"><label>Frete por Unidade: <input type="number" id="p-frete" /></label></div>
-    <div class="campo"><label>Unidades Vendidas por Mês: <input type="number" id="p-vendas" /></label></div>
-    <div class="campo"><label>Margem de Lucro Desejada (%): <input type="number" id="p-margem" /></label></div>
+    <label>Frete por Unidade (R$): <input type="number" id="p-frete" /></label><br>
+    <label>Unidades Vendidas por Mês: <input type="number" id="p-vendas" /></label><br>
+    <label>Margem de Lucro Desejada (%): <input type="number" id="p-margem" /></label>
   </section>
 
   <div class="botoes">
@@ -58,6 +38,8 @@
     <h2>📋 Resultado</h2>
     <div id="saida"></div>
     <canvas id="grafico" width="300" height="300"></canvas>
+    <div id="tabela-fixos"></div>
+    <div id="tabela-variaveis"></div>
   </section>
 
   <script src="script.js"></script>
