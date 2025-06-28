@@ -4,8 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = document.getElementById("grafico-pizza").getContext("2d");
   let chart;
 
+  function getNumber(id) {
+    return parseFloat(document.getElementById(id)?.value) || 0;
+  }
+
   function calcular() {
-    // Fixos
+    // 1. Somar Custos Fixos
     const fixos = Array.from(document.querySelectorAll("#tabela-fixos tbody tr"));
     let totalFixos = 0;
     fixos.forEach(row => {
@@ -15,76 +19,95 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("total-fixos").textContent = `R$ ${totalFixos.toFixed(2)}`;
     fixos.forEach(row => {
       const val = parseFloat(row.querySelector("input").value) || 0;
-      const part = totalFixos > 0 ? (val / totalFixos) * 100 : 0;
-      row.querySelector(".participacao").textContent = `${part.toFixed(1)}%`;
+      const perc = totalFixos > 0 ? (val / totalFixos) * 100 : 0;
+      row.querySelector(".participacao").textContent = `${perc.toFixed(1)}%`;
     });
 
-    // Variáveis
+    // 2. Custos Variáveis
     const variaveis = Array.from(document.querySelectorAll("#tabela-variaveis tbody tr"));
-    let totalVarPerc = 0;
+    let totalPercentualVar = 0;
+    let variaveisPerc = {};
     variaveis.forEach(row => {
-      const perc = parseFloat(row.querySelector("input").value) || 0;
-      totalVarPerc += perc;
+      const id = row.querySelector("input").id;
+      const valor = parseFloat(row.querySelector("input").value) || 0;
+      variaveisPerc[id] = valor;
+      totalPercentualVar += valor;
     });
-    document.getElementById("total-variaveis").textContent = `${totalVarPerc.toFixed(2)}%`;
+    document.getElementById("total-variaveis").textContent = `${totalPercentualVar.toFixed(2)}%`;
 
-    // Preço
-    const precoCompra = parseFloat(document.getElementById("preco-compra").value) || 0;
-    const precoVenda = parseFloat(document.getElementById("preco-venda").value) || 0;
-    const lucroBruto = precoVenda - precoCompra;
-    const margemBruta = precoVenda > 0 ? (lucroBruto / precoVenda) * 100 : 0;
-    const impostosPerc = parseFloat(document.getElementById("variavel-impostos").value) || 0;
-    const impostosValor = precoVenda * (impostosPerc / 100);
-    const lucroLiquido = lucroBruto - impostosValor;
-    const margemLiquida = precoVenda > 0 ? (lucroLiquido / precoVenda) * 100 : 0;
-    const margemContribuicao = precoVenda > 0 ? (lucroLiquido / precoVenda) * 100 : 0;
+    // 3. PARÂMETROS OPERACIONAIS
+    const precoCompra = getNumber("preco-compra");
+    const precoVendaManual = getNumber("preco-venda");
+    const margemDesejada = getNumber("variavel-descontos"); // usaremos campo "descontos" como margem desejada
+    const diasMes = getNumber("dias-mes") || 26;
+    const vendasEstimadas = getNumber("vendas-estimadas") || 1;
 
-    document.getElementById("lucro-bruto").textContent = `R$ ${lucroBruto.toFixed(2)}`;
-    document.getElementById("margem-bruta").textContent = `${margemBruta.toFixed(2)}%`;
-    document.getElementById("impostos-venda").textContent = `R$ ${impostosValor.toFixed(2)}`;
-    document.getElementById("lucro-liquido").textContent = `R$ ${lucroLiquido.toFixed(2)}`;
-    document.getElementById("margem-liquida").textContent = `${margemLiquida.toFixed(2)}%`;
-    document.getElementById("margem-contribuicao").textContent = `${margemContribuicao.toFixed(2)}%`;
+    // 4. Custo fixo por unidade estimada
+    const custoFixoUnit = vendasEstimadas > 0 ? totalFixos / vendasEstimadas : 0;
 
-    // PE
-    const diasMes = parseInt(document.getElementById("dias-mes").value) || 26;
-    const qtdeEstimadas = parseFloat(document.getElementById("vendas-estimadas").value) || 0;
-    const margemUnitaria = precoVenda - precoCompra - impostosValor;
-    const peUnidades = margemUnitaria > 0 ? totalFixos / margemUnitaria : 0;
-    const peReais = precoVenda * peUnidades;
+    // 5. Custo variável por unidade (% do preço)
+    const somaPercentuais = totalPercentualVar + margemDesejada;
+    if (somaPercentuais >= 100) {
+      alert("❌ A soma dos custos variáveis + margem não pode ultrapassar 100%");
+      return;
+    }
+
+    // 6. Preço ideal com markup reverso
+    const precoIdeal = (precoCompra + custoFixoUnit) / (1 - (totalPercentualVar + margemDesejada) / 100);
+
+    // 7. Composição real com preço inserido manualmente
+    const valorImpostos = precoVendaManual * (variaveisPerc["variavel-impostos"] / 100);
+    const lucroBruto = precoVendaManual - precoCompra;
+    const lucroLiquido = lucroBruto - valorImpostos;
+    const margemLiquidaReal = precoVendaManual > 0 ? (lucroLiquido / precoVendaManual) * 100 : 0;
+
+    // 8. Margem de contribuição unitária
+    const margemContribuicaoUnid = precoVendaManual - precoCompra - valorImpostos;
+
+    // 9. Ponto de equilíbrio real
+    const peUnidades = margemContribuicaoUnid > 0 ? totalFixos / margemContribuicaoUnid : 0;
     const peDia = peUnidades / diasMes;
-    const fatDia = precoVenda * (qtdeEstimadas / diasMes || 0);
+    const faturamentoDia = precoVendaManual * (vendasEstimadas / diasMes);
+
+    // 10. Preencher Campos
+    document.getElementById("lucro-bruto").textContent = `R$ ${(precoVendaManual - precoCompra).toFixed(2)}`;
+    document.getElementById("margem-bruta").textContent = `${((precoVendaManual - precoCompra) / precoVendaManual * 100 || 0).toFixed(2)}%`;
+    document.getElementById("impostos-venda").textContent = `R$ ${valorImpostos.toFixed(2)}`;
+    document.getElementById("lucro-liquido").textContent = `R$ ${lucroLiquido.toFixed(2)}`;
+    document.getElementById("margem-liquida").textContent = `${margemLiquidaReal.toFixed(2)}%`;
+    document.getElementById("margem-contribuicao").textContent = `${margemContribuicaoUnid > 0 ? (margemContribuicaoUnid / precoVendaManual * 100).toFixed(2) : 0}%`;
 
     document.getElementById("pe-unidades").textContent = Math.ceil(peUnidades);
-    document.getElementById("pe-reais").textContent = `R$ ${peReais.toFixed(2)}`;
+    document.getElementById("pe-reais").textContent = `R$ ${(precoVendaManual * peUnidades).toFixed(2)}`;
     document.getElementById("pe-dia").textContent = Math.ceil(peDia);
-    document.getElementById("faturamento-dia").textContent = `R$ ${fatDia.toFixed(2)}`;
+    document.getElementById("faturamento-dia").textContent = `R$ ${faturamentoDia.toFixed(2)}`;
 
-    // Gráfico
-    const custosGrafico = [
+    // 11. Alerta se preço abaixo do ideal
+    if (precoVendaManual < precoIdeal) {
+      alert(`⚠️ O preço de venda inserido (R$ ${precoVendaManual.toFixed(2)}) está abaixo do ideal (R$ ${precoIdeal.toFixed(2)}). Isso reduz a margem e aumenta o ponto de equilíbrio.`);
+    } else {
+      console.log("✅ Preço está adequado à margem desejada.");
+    }
+
+    // 12. Mostrar Gráfico
+    pizzaSection.style.display = "block";
+    const custos = [
       { label: "Compra", valor: precoCompra, cor: "#3498db" },
-      { label: "Impostos", valor: impostosValor, cor: "#f39c12" },
-      { label: "Fixos por unidade", valor: totalFixos / (qtdeEstimadas || 1), cor: "#9b59b6" },
+      { label: "Fixos/unid", valor: custoFixoUnit, cor: "#9b59b6" },
+      { label: "Impostos", valor: valorImpostos, cor: "#f39c12" },
       { label: "Lucro", valor: lucroLiquido, cor: "#2ecc71" }
     ];
-    pizzaSection.style.display = "block";
     if (chart) chart.destroy();
     chart = new Chart(ctx, {
       type: "doughnut",
       data: {
-        labels: custosGrafico.map(c => c.label),
+        labels: custos.map(c => c.label),
         datasets: [{
-          data: custosGrafico.map(c => c.valor),
-          backgroundColor: custosGrafico.map(c => c.cor)
+          data: custos.map(c => c.valor),
+          backgroundColor: custos.map(c => c.cor)
         }]
       },
-      options: {
-        plugins: {
-          legend: {
-            position: "bottom"
-          }
-        }
-      }
+      options: { plugins: { legend: { position: "bottom" } } }
     });
   }
 
