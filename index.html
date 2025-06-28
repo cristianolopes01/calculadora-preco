@@ -2,49 +2,97 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Calculadora de Preço de Venda</title>
+  <title>Planilha de Precificação Web</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script defer src="script.js"></script>
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <h1>📦 Calculadora Estratégica de Preço de Venda</h1>
+  <h1>📦 Planilha de Precificação Online</h1>
 
-  <section class="bloco">
-    <h2>🧮 Dados de Custo</h2>
+  <form id="precificacao-form">
+    <!-- CUSTOS FIXOS -->
+    <section class="tabela">
+      <h2>📘 CUSTOS FIXOS</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Valor (R$)</th>
+            <th>Participação (%)</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-fixos">
+          <tr><td>Aluguel</td><td><input type="number" id="fixo-aluguel" /></td><td class="participacao"></td></tr>
+          <tr><td>Energia Elétrica</td><td><input type="number" id="fixo-energia" /></td><td class="participacao"></td></tr>
+          <tr><td>Água</td><td><input type="number" id="fixo-agua" /></td><td class="participacao"></td></tr>
+          <tr><td>Internet</td><td><input type="number" id="fixo-internet" /></td><td class="participacao"></td></tr>
+          <tr><td>Telefonia</td><td><input type="number" id="fixo-telefonia" /></td><td class="participacao"></td></tr>
+          <tr><td>Pessoal</td><td><input type="number" id="fixo-pessoal" /></td><td class="participacao"></td></tr>
+          <tr><td>Remuneração Sócios</td><td><input type="number" id="fixo-socios" /></td><td class="participacao"></td></tr>
+          <tr><td>Assinaturas</td><td><input type="number" id="fixo-assinaturas" /></td><td class="participacao"></td></tr>
+          <tr><td>Contabilidade</td><td><input type="number" id="fixo-contabilidade" /></td><td class="participacao"></td></tr>
+          <tr><td>Manutenções</td><td><input type="number" id="fixo-manutencoes" /></td><td class="participacao"></td></tr>
+          <tr><td>Refeições</td><td><input type="number" id="fixo-refeicoes" /></td><td class="participacao"></td></tr>
+          <tr><td>Depreciações</td><td><input type="number" id="fixo-depreciacoes" /></td><td class="participacao"></td></tr>
+          <tr><td>Outras Despesas</td><td><input type="number" id="fixo-outras" /></td><td class="participacao"></td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td><strong>Total</strong></td><td id="total-fixos"></td><td>100%</td></tr>
+        </tfoot>
+      </table>
+    </section>
 
-    <h3>Custos Fixos Mensais (R$)</h3>
-    <label>Energia Elétrica: <input type="number" id="c-energia" /></label>
-    <label>Água: <input type="number" id="c-agua" /></label>
-    <label>Telefonia: <input type="number" id="c-telefonia" /></label>
-    <label>Pessoal: <input type="number" id="c-pessoal" /></label>
-    <label>Remuneração de Sócios: <input type="number" id="c-socios" /></label>
-    <label>Contabilidade: <input type="number" id="c-contabilidade" /></label>
-    <label>Depreciação: <input type="number" id="c-depreciacao" /></label>
-    <label>Internet: <input type="number" id="c-internet" /></label>
-    <label>Outros Fixos: <input type="number" id="c-outros-fixos" /></label>
+    <!-- CUSTOS VARIÁVEIS -->
+    <section class="tabela">
+      <h2>📙 CUSTOS VARIÁVEIS (% sobre preço de venda)</h2>
+      <table>
+        <thead>
+          <tr><th>Item</th><th>Valor (%)</th><th>Participação</th></tr>
+        </thead>
+        <tbody id="tabela-variaveis">
+          <tr><td>Produção/Aquisição</td><td><input type="number" id="variavel-producao" /></td><td class="participacao"></td></tr>
+          <tr><td>Impostos sobre Faturamento</td><td><input type="number" id="variavel-impostos" /></td><td class="participacao"></td></tr>
+          <tr><td>Comissões de Vendas</td><td><input type="number" id="variavel-comissoes" /></td><td class="participacao"></td></tr>
+          <tr><td>Taxa de Cartão – Débito</td><td><input type="number" id="variavel-debito" /></td><td class="participacao"></td></tr>
+          <tr><td>Fretes</td><td><input type="number" id="variavel-fretes" /></td><td class="participacao"></td></tr>
+          <tr><td>Antecipação</td><td><input type="number" id="variavel-antecipacao" /></td><td class="participacao"></td></tr>
+          <tr><td>Descontos</td><td><input type="number" id="variavel-descontos" /></td><td class="participacao"></td></tr>
+          <tr><td>Outros</td><td><input type="number" id="variavel-outros" /></td><td class="participacao"></td></tr>
+          <tr><td>Taxa de Cartão – Crédito</td><td><input type="number" id="variavel-credito" /></td><td class="participacao"></td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td><strong>Total</strong></td><td id="total-variaveis"></td><td></td></tr>
+        </tfoot>
+      </table>
+    </section>
 
-    <h3>Custos Variáveis (% sobre o preço de venda)</h3>
-    <label>Impostos sobre Faturamento: <input type="number" id="v-impostos" /></label>
-    <label>Comissões: <input type="number" id="v-comissao" /></label>
-    <label>Taxas de Cartão: <input type="number" id="v-taxa-cartao" /></label>
-    <label>Descontos Comerciais: <input type="number" id="v-descontos" /></label>
-  </section>
+    <!-- PREÇOS -->
+    <section class="tabela">
+      <h2>💰 PREÇOS</h2>
+      <label>Preço de Compra (R$): <input type="number" id="preco-compra" /></label>
+      <label>Preço de Venda (R$): <input type="number" id="preco-venda" /></label>
+      <table>
+        <tbody>
+          <tr><td>Lucro Bruto (R$)</td><td id="lucro-bruto"></td></tr>
+          <tr><td>Margem de Lucro Bruta (%)</td><td id="margem-bruta"></td></tr>
+          <tr><td>Impostos sobre Venda (R$)</td><td id="impostos-venda"></td></tr>
+          <tr><td>Lucro Líquido (R$)</td><td id="lucro-liquido"></td></tr>
+          <tr><td>Margem de Lucro Líquida (%)</td><td id="margem-liquida"></td></tr>
+          <tr><td>Margem de Contribuição (%)</td><td id="margem-contribuicao"></td></tr>
+        </tbody>
+      </table>
+    </section>
 
-  <section class="bloco">
-    <h2>📈 Dados Operacionais</h2>
-    <label>Custo de Aquisição ou Produção: <input type="number" id="p-custo-aquisicao" /></label>
-    <label>Frete por Unidade: <input type="number" id="p-frete" /></label>
-    <label>Quantidade de Vendas por Mês: <input type="number" id="p-vendas-mes" /></label>
-    <label>Margem de Lucro Desejada (%): <input type="number" id="p-margem-lucro" /></label>
-
-    <button id="calculate-btn">Calcular</button>
-  </section>
-
-  <section id="result-card" class="bloco" style="display:none;">
-    <h2>📊 Resultado</h2>
-    <div id="result-content"></div>
-    <canvas id="grafico" height="180"></canvas>
-  </section>
-</body>
-</html>
+    <!-- PONTO DE EQUILÍBRIO -->
+    <section class="tabela">
+      <h2>🎯 PONTO DE EQUILÍBRIO</h2>
+      <label>Quantidade de Peças a Comprar: <input type="number" id="qtde-comprar" /></label>
+      <label>Quantidade de Dias no Mês: <input type="number" id="dias-mes" value="26" /></label>
+      <label>Estimativa de Vendas (Qtde): <input type="number" id="vendas-estimadas" /></label>
+      <table>
+        <tbody>
+          <tr><td>Ponto de Equilíbrio (R$)</td><td id="pe-reais"></td></tr>
+          <tr><td>Quantidade de Peças a Vender</td><td id="pe-unidades"></td></tr>
+          <tr><td>Peças a Vender por Dia</td><td id="pe-dia"></td></tr>
+          <tr><td>Faturamento Diário (R$)</td
