@@ -1,168 +1,147 @@
-window.addEventListener('DOMContentLoaded', function () {
-  const inputs = document.querySelectorAll('input');
+window.addEventListener('DOMContentLoaded', () => {
+  const fixosLabels = [
+    'Aluguel', 'Energia Elétrica', 'Água', 'Internet', 'Telefonia',
+    'Pessoal', 'Remuneração Sócios', 'Assinaturas', 'Contabilidade',
+    'Manutenções', 'Refeições', 'Depreciações', 'Outras Despesas'
+  ];
 
-  inputs.forEach(input => {
-    const saved = localStorage.getItem(input.id);
-    if (saved !== null) input.value = saved;
-  });
+  const variaveisLabels = [
+    'Custo de Aquisição/Produção', 'Impostos sobre faturamento', 'Comissões de Vendas',
+    'Taxa de Cartão – Débito', 'Fretes', 'Taxa de Antecipação',
+    'Desconto de Vendas', 'Outros Custos Variáveis', 'Taxa de Cartão – Crédito'
+  ];
 
-  inputs.forEach(input => {
-    input.addEventListener('input', () => {
-      input.value = input.value.replace(',', '.');
-      localStorage.setItem(input.id, input.value);
-      input.classList.remove('erro');
+  // Geração dinâmica dos campos
+  const gerarCampos = () => {
+    const fixosDiv = document.getElementById('custos-fixos');
+    const variaveisDiv = document.getElementById('custos-variaveis');
+
+    fixosLabels.forEach((label, i) => {
+      fixosDiv.innerHTML += `
+        <div class="fixo-item">
+          <label for="fixo${i + 1}">${label}:</label>
+          <input class="fixo" data-nome="${label}" id="fixo${i + 1}" type="number" />
+          <span class="porcentagem" id="p-fixo${i + 1}">0%</span>
+        </div>`;
     });
-  });
 
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.body.classList.add('dark');
-  }
+    variaveisLabels.forEach((label, i) => {
+      variaveisDiv.innerHTML += `
+        <div class="variavel-item">
+          <label for="var${i + 1}">${label}:</label>
+          <input class="variavel" data-nome="${label}" id="var${i + 1}" type="text" />
+          <span class="porcentagem" id="p-var${i + 1}">0%</span>
+        </div>`;
+    });
+  };
 
-  document.getElementById('toggle-theme').addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-  });
+  gerarCampos();
 
-  function formatCurrencyBR(value) {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  }
+  const formatCurrencyBR = (value) =>
+    value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-  function calcularParticipacaoFixos(custosFixos) {
-    const total = custosFixos.reduce((acc, item) => acc + item.valor, 0);
-    return custosFixos.map(item => ({
-      ...item,
-      participacao: total ? (item.valor / total * 100) : 0
+  const coletarDados = (classe) =>
+    [...document.querySelectorAll(`.${classe}`)].map((el) => {
+      const nome = el.dataset.nome;
+      const valor =
+        classe === 'variavel'
+          ? parseFloat(el.value.replace('%', '').replace(',', '.')) / 100 || 0
+          : parseFloat(el.value) || 0;
+      return { nome, valor };
+    });
+
+  const calcularParticipacao = (lista) => {
+    const total = lista.reduce((acc, i) => acc + i.valor, 0);
+    return lista.map((i) => ({
+      ...i,
+      participacao: total > 0 ? (i.valor / total) * 100 : 0
     }));
-  }
+  };
 
-  function gerarTabelaCustosFixos(fixosCalculados) {
-    let total = fixosCalculados.reduce((acc, item) => acc + item.valor, 0);
-    let html = `<h3>📘 Custos Fixos</h3><table><thead><tr><th>Item</th><th>Valor</th><th>%</th></tr></thead><tbody>`;
-    fixosCalculados.forEach(item => {
-      html += `<tr><td>${item.nome}</td><td>${formatCurrencyBR(item.valor)}</td><td>${item.participacao.toFixed(1)}%</td></tr>`;
+  const atualizarParticipacoes = (fixos, variaveis) => {
+    fixos.forEach((item, i) => {
+      const span = document.getElementById(`p-fixo${i + 1}`);
+      if (span) span.textContent = `${item.participacao.toFixed(1)}%`;
     });
-    html += `<tr class="total"><td>Total</td><td>${formatCurrencyBR(total)}</td><td>100%</td></tr></tbody></table>`;
+
+    const totalVar = variaveis.reduce((acc, i) => acc + i.valor, 0);
+    variaveis.forEach((item, i) => {
+      const span = document.getElementById(`p-var${i + 1}`);
+      const p = totalVar > 0 ? (item.valor / totalVar) * 100 : 0;
+      if (span) span.textContent = `${p.toFixed(1)}%`;
+    });
+  };
+
+  const gerarTabela = (titulo, dados, tipo) => {
+    const total = dados.reduce((acc, i) => acc + i.valor, 0);
+    const estimado = tipo === 'variavel' ? dados.map(i => ({
+      ...i,
+      estimado: i.valor * (parseFloat(document.getElementById('precoVenda').value) || 0)
+    })) : [];
+
+    let html = `<h3>${titulo}</h3><table><thead><tr><th>Item</th><th>${tipo === 'variavel' ? '%' : 'Valor'}</th>${tipo === 'variavel' ? '<th>Estimado</th>' : '<th>%</th>'}</tr></thead><tbody>`;
+    dados.forEach((i) => {
+      html += `<tr><td>${i.nome}</td><td>${tipo === 'variavel' ? (i.valor * 100).toFixed(2) + '%' : formatCurrencyBR(i.valor)}</td>${
+        tipo === 'variavel' ? `<td>${formatCurrencyBR(i.estimado)}</td>` : `<td>${i.participacao.toFixed(1)}%</td>`
+      }</tr>`;
+    });
+    html += `<tr class="total"><td>Total</td><td>${tipo === 'variavel' ? (total * 100).toFixed(2) + '%' : formatCurrencyBR(total)}</td>${tipo === 'variavel' ? `<td>${formatCurrencyBR(estimado.reduce((a, i) => a + i.estimado, 0))}</td>` : '<td>100%</td>'}</tr></tbody></table>`;
     return html;
-  }
+  };
 
-  function calcularVariaveisEstimado(custosVariaveis, precoVenda) {
-    return custosVariaveis.map(item => ({
-      ...item,
-      valorEstimado: precoVenda * item.percentual
-    }));
-  }
+  const calcularPontoEquilibrio = (fixos, varPerc, preco) => {
+    const peR$ = fixos / (1 - varPerc);
+    const qtd = preco > 0 ? Math.ceil(peR$ / preco) : 0;
+    const porDia = Math.ceil(qtd / 26);
+    const fatDia = peR$ / 26;
+    return { peR$, qtd, porDia, fatDia };
+  };
 
-  function gerarTabelaCustosVariaveis(variaveisCalculadas) {
-    const totalPercentual = variaveisCalculadas.reduce((acc, item) => acc + item.percentual, 0);
-    const totalEstimado = variaveisCalculadas.reduce((acc, item) => acc + item.valorEstimado, 0);
-    let html = `<h3>📙 Custos Variáveis</h3><table><thead><tr><th>Item</th><th>%</th><th>Estimado</th></tr></thead><tbody>`;
-    variaveisCalculadas.forEach(item => {
-      html += `<tr><td>${item.nome}</td><td>${(item.percentual * 100).toFixed(2)}%</td><td>${formatCurrencyBR(item.valorEstimado)}</td></tr>`;
-    });
-    html += `<tr class="total"><td>Total</td><td>${(totalPercentual * 100).toFixed(2)}%</td><td>${formatCurrencyBR(totalEstimado)}</td></tr></tbody></table>`;
-    return html;
-  }
-
-  function exibirResumoAnalitico(fixosCalculados, variaveisCalculadas) {
-    const divResultado = document.getElementById('resultadoDetalhado');
-    divResultado.innerHTML = '';
-    const htmlFixos = gerarTabelaCustosFixos(fixosCalculados);
-    const htmlVariaveis = gerarTabelaCustosVariaveis(variaveisCalculadas);
-    const container = document.createElement('div');
-    container.classList.add('resumo-container');
-    container.innerHTML = `${htmlFixos}<hr/>${htmlVariaveis}`;
-    divResultado.appendChild(container);
-  }
-
-  function coletarDadosFixos() {
-    const fixos = [];
-    document.querySelectorAll('.fixo').forEach(input => {
-      const nome = input.dataset.nome;
-      const valor = parseFloat(input.value) || 0;
-      fixos.push({ nome, valor });
-    });
-    return fixos;
-  }
-
-  function coletarDadosVariaveis() {
-    const variaveis = [];
-    document.querySelectorAll('.variavel').forEach(input => {
-      const nome = input.dataset.nome;
-      const percentual = parseFloat(input.value.replace('%', '').replace(',', '.')) / 100 || 0;
-      variaveis.push({ nome, percentual });
-    });
-    return variaveis;
-  }
-
-  function calcularPontoEquilibrio(custoFixo, percentualVar, preco) {
-    const peFaturamento = custoFixo / (1 - percentualVar);
-    const qtdVender = Math.ceil(peFaturamento / preco);
-    const diasUteis = 26;
-    const porDia = Math.ceil(qtdVender / diasUteis);
-    const fatDia = peFaturamento / diasUteis;
-    return { peFaturamento, qtdVender, porDia, fatDia };
-  }
-
-  function exibirPontoEquilibrio(resultado) {
-    const div = document.createElement('div');
-    div.innerHTML = `
+  const exibirPontoEquilibrio = (res) => {
+    return `
       <h3>📈 Ponto de Equilíbrio</h3>
       <table>
-        <tr><td>Ponto de Equilíbrio (R$):</td><td>${formatCurrencyBR(resultado.peFaturamento)}</td></tr>
-        <tr><td>Unidades a vender:</td><td>${resultado.qtdVender}</td></tr>
-        <tr><td>Vendas/dia (26 dias):</td><td>${resultado.porDia}</td></tr>
-        <tr><td>Faturamento por dia:</td><td>${formatCurrencyBR(resultado.fatDia)}</td></tr>
-      </table><br/>
-    `;
-    document.getElementById('resultadoDetalhado').appendChild(div);
-  }
+        <tr><td>Ponto de Equilíbrio (R$)</td><td>${formatCurrencyBR(res.peR$)}</td></tr>
+        <tr><td>Peças a Vender</td><td>${res.qtd}</td></tr>
+        <tr><td>Peças por Dia</td><td>${res.porDia}</td></tr>
+        <tr><td>Faturamento por Dia</td><td>${formatCurrencyBR(res.fatDia)}</td></tr>
+      </table><br/>`;
+  };
 
   document.getElementById('calcular').addEventListener('click', () => {
-    const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
-    const custosFixos = coletarDadosFixos();
-    const custosVariaveis = coletarDadosVariaveis();
+    const preco = parseFloat(document.getElementById('precoVenda').value) || 0;
+    const fixos = coletarDados('fixo');
+    const variaveis = coletarDados('variavel');
 
-    const fixosCalculados = calcularParticipacaoFixos(custosFixos);
-    const variaveisCalculadas = calcularVariaveisEstimado(custosVariaveis, precoVenda);
-    exibirResumoAnalitico(fixosCalculados, variaveisCalculadas);
+    const fixosCalc = calcularParticipacao(fixos);
+    atualizarParticipacoes(fixosCalc, variaveis);
 
-    const percentualTotalVariavel = custosVariaveis.reduce((acc, item) => acc + item.percentual, 0);
-    const resultadoPE = calcularPontoEquilibrio(
-      fixosCalculados.reduce((acc, item) => acc + item.valor, 0),
-      percentualTotalVariavel,
-      precoVenda
-    );
-    exibirPontoEquilibrio(resultadoPE);
+    const tabelaFixos = gerarTabela('📘 Custos Fixos', fixosCalc, 'fixo');
+    const tabelaVariaveis = gerarTabela('📙 Custos Variáveis', variaveis, 'variavel');
+
+    const percVar = variaveis.reduce((acc, i) => acc + i.valor, 0);
+    const resPE = calcularPontoEquilibrio(fixos.reduce((a, i) => a + i.valor, 0), percVar, preco);
+    const blocoPE = exibirPontoEquilibrio(resPE);
+
+    document.getElementById('resultadoDetalhado').innerHTML = tabelaFixos + tabelaVariaveis + blocoPE;
   });
 
   // Simulador de Preço
-  window.simularPreco = function () {
-    const precoCompra = parseFloat(document.getElementById('precoCompra').value) || 0;
+  window.simularPreco = () => {
+    const compra = parseFloat(document.getElementById('precoCompra').value) || 0;
     const margem = parseFloat(document.getElementById('margemDesejada').value) / 100 || 0;
     const impostos = parseFloat(document.getElementById('impostos').value) / 100 || 0;
 
-    const precoVenda = precoCompra / (1 - margem);
-    const lucroBruto = precoVenda - precoCompra;
-    const imp = precoVenda * impostos;
-    const lucroLiq = lucroBruto - imp;
-    const margLiq = lucroLiq / precoVenda;
+    const venda = compra / (1 - margem);
+    const lucro = venda - compra;
+    const impRS = venda * impostos;
+    const lucroLiq = lucro - impRS;
+    const margLiq = lucroLiq / venda;
 
     document.getElementById('resultadoSimulacao').innerHTML = `
       <table>
-        <tr><td>Preço Venda:</td><td>${formatCurrencyBR(precoVenda)}</td></tr>
-        <tr><td>Lucro Bruto:</td><td>${formatCurrencyBR(lucroBruto)}</td></tr>
-        <tr><td>Impostos:</td><td>${formatCurrencyBR(imp)}</td></tr>
+        <tr><td>Preço Venda:</td><td>${formatCurrencyBR(venda)}</td></tr>
+        <tr><td>Lucro Bruto:</td><td>${formatCurrencyBR(lucro)}</td></tr>
+        <tr><td>Impostos:</td><td>${formatCurrencyBR(impRS)}</td></tr>
         <tr><td>Lucro Líquido:</td><td>${formatCurrencyBR(lucroLiq)}</td></tr>
-        <tr><td>Margem Líquida:</td><td>${(margLiq * 100).toFixed(2)}%</td></tr>
-      </table>`;
-  };
-
-  // Simulador de Ponto de Equilíbrio
-  window.calcularSimulacaoPE = function () {
-    const fixos = parseFloat(document.getElementById('peFixos').value) || 0;
-    const percVar = parseFloat(document.getElementById('peVariavel').value) / 100 || 0;
-    const preco = parseFloat(document.getElementById('pePrecoVenda').value) || 1;
-    const dias = parseInt(document.getElementById('peDiasMes').value) || 26;
-
-    const peFaturamento = fixos / (1 - percVar);
-    const qtdVender = Math.ceil(peFaturamento / preco);
-    const porDia
+        <tr><td>Margem Líquida:</td><td>${(margLiq * 100).toFixed(2)}%</td></
