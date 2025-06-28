@@ -1,6 +1,23 @@
+:root {
+  --bg: #f7f9fc;
+  --text: #222;
+  --section: #fff;
+  --result-bg: #e6f4ea;
+  --border: #ccc;
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #e0e0e0;
+  --section: #1e1e1e;
+  --result-bg: #1b2b1b;
+  --border: #444;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background: #f7f9fc;
+  background: var(--bg);
+  color: var(--text);
   padding: 20px;
   max-width: 900px;
   margin: auto;
@@ -17,12 +34,22 @@ body {
   margin-bottom: 10px;
 }
 
+.tema {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text);
+  margin-top: 10px;
+}
+
 h1 {
-  color: #2c3e50;
+  color: var(--text);
 }
 
 .input-section {
-  background: #fff;
+  background: var(--section);
   border-radius: 6px;
   padding: 15px;
   box-shadow: 0 0 8px rgba(0,0,0,0.05);
@@ -32,7 +59,7 @@ h1 {
 .input-section h2 {
   margin-top: 0;
   font-size: 1.2em;
-  color: #34495e;
+  color: var(--text);
 }
 
 .campo {
@@ -45,17 +72,24 @@ h1 {
 .campo label {
   flex: 1;
   font-weight: bold;
-  color: #333;
   margin-right: 10px;
   min-width: 150px;
+  color: var(--text);
 }
 
 .campo input {
   flex: 1;
   max-width: 150px;
   padding: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   border-radius: 4px;
+  background: var(--section);
+  color: var(--text);
+}
+
+input.erro {
+  border: 2px solid red !important;
+  background-color: #ffe6e6;
 }
 
 .botoes {
@@ -91,8 +125,8 @@ button:hover {
 }
 
 #result-card {
-  background: #e6f4ea;
-  border: 1px solid #c8e6c9;
+  background: var(--result-bg);
+  border: 1px solid var(--border);
   padding: 15px;
   border-radius: 5px;
   margin-top: 20px;
@@ -121,12 +155,12 @@ canvas {
 }
 
 .rodape {
-  background: #f0f0f0;
+  background: var(--section);
   padding: 20px;
   text-align: center;
   font-size: 0.9em;
-  color: #555;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--border);
+  color: var(--text);
 }
 
 .rodape a {
