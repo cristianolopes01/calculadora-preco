@@ -8,44 +8,44 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Calculadora de Preço de Venda</h1>
-    
-    <section class="input-section">
-        <h2>Custos Fixos (mensal)</h2>
-        <input id="c-energia" type="number" placeholder="Energia elétrica">
-        <input id="c-agua" type="number" placeholder="Água">
-        <input id="c-telefonia" type="number" placeholder="Telefonia">
-        <input id="c-pessoal" type="number" placeholder="Pessoal">
-        <input id="c-socios" type="number" placeholder="Pró-labore / Sócios">
-        <input id="c-contabilidade" type="number" placeholder="Contabilidade">
-        <input id="c-depreciacao" type="number" placeholder="Depreciação">
-        <input id="c-internet" type="number" placeholder="Internet">
-        <input id="c-outros-fixos" type="number" placeholder="Outros Fixos">
-    </section>
+  <h1>Calculadora de Preço de Venda</h1>
 
-    <section class="input-section">
-        <h2>Custos Variáveis (% do preço)</h2>
-        <input id="v-impostos" type="number" placeholder="Impostos (%)">
-        <input id="v-comissao" type="number" placeholder="Comissão (%)">
-        <input id="v-taxa-cartao" type="number" placeholder="Taxa do Cartão (%)">
-        <input id="v-descontos" type="number" placeholder="Descontos (%)">
-    </section>
+  <section class="input-section">
+    <h2>Custos Fixos (mensal)</h2>
+    <input id="c-energia" type="number" placeholder="Energia elétrica">
+    <input id="c-agua" type="number" placeholder="Água">
+    <input id="c-telefonia" type="number" placeholder="Telefonia">
+    <input id="c-pessoal" type="number" placeholder="Pessoal">
+    <input id="c-socios" type="number" placeholder="Pró-labore / Sócios">
+    <input id="c-contabilidade" type="number" placeholder="Contabilidade">
+    <input id="c-depreciacao" type="number" placeholder="Depreciação">
+    <input id="c-internet" type="number" placeholder="Internet">
+    <input id="c-outros-fixos" type="number" placeholder="Outros Fixos">
+  </section>
 
-    <section class="input-section">
-        <h2>Dados do Produto</h2>
-        <input id="p-custo-aquisicao" type="number" placeholder="Custo de Aquisição/Produção">
-        <input id="p-frete" type="number" placeholder="Frete por unidade">
-        <input id="p-vendas-mes" type="number" placeholder="Previsão de Vendas (mês)">
-        <input id="p-margem-lucro" type="number" placeholder="Margem de Lucro (%)">
-    </section>
+  <section class="input-section">
+    <h2>Custos Variáveis (% do preço)</h2>
+    <input id="v-impostos" type="number" placeholder="Impostos (%)">
+    <input id="v-comissao" type="number" placeholder="Comissão (%)">
+    <input id="v-taxa-cartao" type="number" placeholder="Taxa do Cartão (%)">
+    <input id="v-descontos" type="number" placeholder="Descontos (%)">
+  </section>
 
-    <button id="calculate-btn">Calcular Preço de Venda</button>
+  <section class="input-section">
+    <h2>Dados do Produto</h2>
+    <input id="p-custo-aquisicao" type="number" placeholder="Custo de Aquisição/Produção">
+    <input id="p-frete" type="number" placeholder="Frete por unidade">
+    <input id="p-vendas-mes" type="number" placeholder="Previsão de Vendas (mês)">
+    <input id="p-margem-lucro" type="number" placeholder="Margem de Lucro (%)">
+  </section>
 
-    <section id="result-card">
-        <div id="result-content"></div>
-        <canvas id="grafico" width="400" height="400"></canvas>
-    </section>
+  <button id="calculate-btn">Calcular Preço de Venda</button>
 
-    <script src="script.js"></script>
+  <section id="result-card">
+    <div id="result-content"></div>
+    <canvas id="grafico" width="400" height="400"></canvas>
+  </section>
+
+  <script src="script.js"></script>
 </body>
 </html>
