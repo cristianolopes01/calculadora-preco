@@ -1,61 +1,97 @@
 body {
   font-family: 'Segoe UI', sans-serif;
-  max-width: 900px;
+  background: #f4f8fb;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 30px;
-  background: #f9fbfd;
+  padding: 40px 20px;
   color: #333;
 }
-h1, h2, h3 {
+
+h1 {
+  text-align: center;
+  margin-bottom: 40px;
   color: #2c3e50;
-  margin-bottom: 10px;
 }
-.bloco {
+
+h2 {
+  margin-top: 30px;
+  color: #34495e;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 5px;
+}
+
+section.tabela {
   background: #fff;
+  border-radius: 8px;
   padding: 20px;
   margin-bottom: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
+
 label {
   display: block;
-  margin: 8px 0 12px;
+  margin: 12px 0 8px;
+  font-weight: 600;
 }
-input {
+
+input[type="number"] {
   width: 100%;
+  max-width: 200px;
   padding: 8px;
-  font-size: 16px;
+  font-size: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  background: #3498db;
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-button:hover {
-  background: #2980b9;
-}
-.result-price {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 15px 0;
-}
-.result-detail {
-  margin-bottom: 8px;
-}
-.result-detail span {
-  float: right;
-  font-weight: bold;
-}
-canvas {
+
+table {
+  width: 100%;
+  border-collapse: collapse;
   margin-top: 20px;
 }
-.mostrar {
-  display: block !important;
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+th {
+  background-color: #ecf0f1;
+  font-weight: 600;
+}
+
+tfoot td {
+  font-weight: bold;
+  background: #f9f9f9;
+}
+
+#precificacao-form button {
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: bold;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  margin-right: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#precificacao-form button:hover {
+  background-color: #2980b9;
+}
+
+.acoes {
+  text-align: right;
+  margin-top: 30px;
+}
+
+canvas {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
