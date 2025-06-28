@@ -3,10 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculadora de Precificação</title>
+  <title>Calculadora de Precificação – Tausystem do Brasil</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <header style="text-align:center; margin-bottom: 2rem;">
+    <img src="logo-tausystem.png" alt="Tausystem do Brasil" style="max-width: 220px;" />
+  </header>
 
   <button id="toggle-theme">🌗 Alternar Tema</button>
 
@@ -27,6 +31,30 @@
   <button id="calcular">📊 Calcular</button>
 
   <div id="resultadoDetalhado"></div>
+
+  <!-- Simuladores -->
+  <hr/>
+  <h3>🧮 Simulador de Preço de Venda</h3>
+  <div class="simulador">
+    <label>Preço de Compra (R$): <input type="number" id="precoCompra" value="20" /></label>
+    <label>Margem de Lucro Desejada (%): <input type="number" id="margemDesejada" value="40" /></label>
+    <label>Impostos (%): <input type="number" id="impostos" value="10.58" /></label>
+    <br/>
+    <button onclick="simularPreco()">Simular</button>
+    <div id="resultadoSimulacao"></div>
+  </div>
+
+  <hr/>
+  <h3>📈 Simulador de Ponto de Equilíbrio</h3>
+  <div class="pe-simulador">
+    <label>Custos Fixos (R$): <input type="number" id="peFixos" value="11020.00" /></label>
+    <label>% Custos Variáveis: <input type="number" id="peVariavel" value="18.00" /></label>
+    <label>Preço Unitário (R$): <input type="number" id="pePrecoVenda" value="28.00" /></label>
+    <label>Dias no Mês: <input type="number" id="peDiasMes" value="26" /></label>
+    <br/>
+    <button onclick="calcularSimulacaoPE()">Simular Ponto de Equilíbrio</button>
+    <div id="peResultado"></div>
+  </div>
 
   <script src="script.js"></script>
 </body>
