@@ -1,106 +1,98 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const calcular = document.getElementById("calcular");
-  const limpar = document.getElementById("limpar");
-  const gerarPdf = document.getElementById("gerar-pdf");
-  let grafico;
-
-  function executarCalculo() {
-    const precoVenda = parseFloat(document.getElementById("preco-venda")?.value) || 0;
-    const precoCompra = parseFloat(document.getElementById("preco-compra")?.value) || 0;
-    const imposto = parseFloat(document.getElementById("imposto-vendas")?.value) || 0;
-    const adicional = parseFloat(document.getElementById("margem-adicional")?.value) || 0;
-    const diasUteis = parseInt(document.getElementById("dias-uteis")?.value) || 22;
-
-    // Custos fixos
-    const fixos = ["fixo-aluguel", "fixo-salarios", "fixo-energia", "fixo-internet", "fixo-outros"];
-    const totalFixos = fixos.reduce((acc, id) => {
-      return acc + (parseFloat(document.getElementById(id)?.value) || 0);
-    }, 0);
-
-    const valorImposto = precoVenda * (imposto / 100);
-    const margemContribuicao = precoVenda - precoCompra - valorImposto + adicional;
-
-    const peUnidades = margemContribuicao > 0 ? totalFixos / margemContribuicao : 0;
-    const peDiario = diasUteis > 0 ? peUnidades / diasUteis : 0;
-
-    // Relatório Preço
-    document.getElementById("relatorio-preco").innerHTML = `
-      <h3>🧾 Margem de Contribuição</h3>
-      <table>
-        <tr><td>Preço de Venda</td><td>R$ ${precoVenda.toFixed(2)}</td></tr>
-        <tr><td>Preço de Compra</td><td>R$ ${precoCompra.toFixed(2)}</td></tr>
-        <tr><td>Imposto sobre Venda (${imposto}%)</td><td>R$ ${valorImposto.toFixed(2)}</td></tr>
-        <tr><td>Margem Adicional</td><td>R$ ${adicional.toFixed(2)}</td></tr>
-        <tr><td><strong>Margem de Contribuição Unitária</strong></td><td><strong>R$ ${margemContribuicao.toFixed(2)}</strong></td></tr>
-      </table>
-    `;
-
-    // Relatório Fixos
-    document.getElementById("relatorio-fixos").innerHTML = `
-      <h3>📘 Custos Fixos</h3>
-      <table>
-        ${fixos.map(id => {
-          const nome = id.replace("fixo-", "").replace("-", " ").toUpperCase();
-          const val = parseFloat(document.getElementById(id)?.value) || 0;
-          return `<tr><td>${nome}</td><td>R$ ${val.toFixed(2)}</td></tr>`;
-        }).join("")}
-        <tr><td><strong>Total</strong></td><td><strong>R$ ${totalFixos.toFixed(2)}</strong></td></tr>
-      </table>
-    `;
-
-    // Relatório Equilíbrio
-    document.getElementById("relatorio-equilibrio").innerHTML = `
-      <h3>🎯 Ponto de Equilíbrio</h3>
-      <table>
-        <tr><td>PE Mensal (Unidades)</td><td>${margemContribuicao > 0 ? Math.ceil(peUnidades) : '–'}</td></tr>
-        <tr><td>PE Diário (Unidades)</td><td>${margemContribuicao > 0 ? Math.ceil(peDiario) : '–'}</td></tr>
-      </table>
-    `;
-
-    document.getElementById("resultados").style.display = "block";
-
-    if (grafico) grafico.destroy();
-    const ctx = document.getElementById("grafico-margem").getContext("2d");
-
-    grafico = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Venda", "Compra", "Imposto", "Margem Unitária"],
-        datasets: [{
-          label: "R$",
-          data: [precoVenda, precoCompra, valorImposto, margemContribuicao],
-          backgroundColor: ["#2980b9", "#c0392b", "#f39c12", "#27ae60"]
-        }]
-      },
-      options: {
-        scales: { y: { beginAtZero: true } },
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
-
-  calcular.addEventListener("click", executarCalculo);
-  document.querySelectorAll("input").forEach(el =>
-    el.addEventListener("input", executarCalculo)
-  );
-
-  limpar.addEventListener("click", () => {
-    document.querySelectorAll("input").forEach(el => el.value = "");
-    document.getElementById("resultados").style.display = "none";
-    if (grafico) grafico.destroy();
+document.getElementById('calculate-btn').addEventListener('click', function () {
+  const fixosIds = [
+    'c-energia',
+    'c-agua',
+    'c-telefonia',
+    'c-pessoal',
+    'c-socios',
+    'c-contabilidade',
+    'c-depreciacao',
+    'c-internet',
+    'c-outros-fixos',
+  ];
+  let totalCustosFixos = 0;
+  fixosIds.forEach((id) => {
+    totalCustosFixos += parseFloat(document.getElementById(id).value) || 0;
   });
 
-  gerarPdf.addEventListener("click", () => {
-    const resultado = document.getElementById("resultados");
-    if (!resultado || resultado.style.display === "none") {
-      alert("Calcule antes de gerar o PDF.");
-      return;
-    }
+  const variaveisIds = ['v-impostos', 'v-comissao', 'v-taxa-cartao', 'v-descontos'];
+  let totalCustosVariaveisPercentual = 0;
+  variaveisIds.forEach((id) => {
+    totalCustosVariaveisPercentual += parseFloat(document.getElementById(id).value) || 0;
+  });
 
-    html2pdf().from(resultado).set({
-      margin: 10,
-      filename: `relatorio-pe-${new Date().toLocaleDateString("pt-BR")}.pdf`,
-      jsPDF: { format: "a4", orientation: "portrait" }
-    }).save();
+  const custoAquisicao = parseFloat(document.getElementById('p-custo-aquisicao').value) || 0;
+  const freteUnidade = parseFloat(document.getElementById('p-frete').value) || 0;
+  const vendasMes = parseInt(document.getElementById('p-vendas-mes').value) || 0;
+  const margemLucro = parseFloat(document.getElementById('p-margem-lucro').value) || 0;
+
+  if (custoAquisicao === 0 || vendasMes === 0 || margemLucro === 0) {
+    alert('Preencha o Custo de Aquisição, Vendas Mensais e Margem de Lucro.');
+    return;
+  }
+
+  const custoFixoUnitario = totalCustosFixos / vendasMes;
+  const custoVariavelUnitario = custoAquisicao + freteUnidade;
+  const custoTotalUnitario = custoFixoUnitario + custoVariavelUnitario;
+
+  const somaPercentuais = (totalCustosVariaveisPercentual + margemLucro) / 100;
+
+  if (somaPercentuais >= 1) {
+    alert('A soma dos percentuais não pode ser maior ou igual a 100%.');
+    return;
+  }
+
+  const precoDeVenda = custoTotalUnitario / (1 - somaPercentuais);
+  const valorImpostos = precoDeVenda * (parseFloat(document.getElementById('v-impostos').value) / 100);
+  const valorComissao = precoDeVenda * (parseFloat(document.getElementById('v-comissao').value) / 100);
+  const valorTaxaCartao = precoDeVenda * (parseFloat(document.getElementById('v-taxa-cartao').value) / 100);
+  const valorLucro = precoDeVenda * (margemLucro / 100);
+
+  const margemContribuicao = valorLucro + custoFixoUnitario;
+  const pontoEquilibrioUnidades = margemContribuicao > 0 ? totalCustosFixos / margemContribuicao : 0;
+  const diasUteis = 26;
+  const pontoEquilibrioDiario = pontoEquilibrioUnidades / diasUteis;
+
+  const resultCard = document.getElementById('result-card');
+  const resultContent = document.getElementById('result-content');
+
+  resultContent.innerHTML = `
+    <p class="result-price">💰 <strong>Preço de Venda Sugerido:</strong> <span>R$ ${precoDeVenda.toFixed(2)}</span></p>
+    <p class="result-detail"><strong>Composição do Preço:</strong></p>
+    <p class="result-detail">Custo de Aquisição: <span>R$ ${custoAquisicao.toFixed(2)}</span></p>
+    <p class="result-detail">Frete por Unidade: <span>R$ ${freteUnidade.toFixed(2)}</span></p>
+    <p class="result-detail">Custo Fixo por Unidade: <span>R$ ${custoFixoUnitario.toFixed(2)}</span></p>
+    <p class="result-detail">Impostos e Taxas: <span>R$ ${(valorImpostos + valorComissao + valorTaxaCartao).toFixed(2)}</span></p>
+    <p class="result-detail">Lucro Bruto por Unidade: <span>R$ ${valorLucro.toFixed(2)} (${margemLucro}%)</span></p>
+    <p class="result-detail"><strong>🎯 Ponto de Equilíbrio:</strong> <br>Unidades por mês: ${Math.ceil(pontoEquilibrioUnidades)} <br>Unidades por dia útil: ${Math.ceil(pontoEquilibrioDiario)}</p>
+  `;
+
+  resultCard.classList.add('mostrar');
+
+  // GRÁFICO
+  const ctx = document.getElementById('grafico').getContext('2d');
+  if (window.myChart) window.myChart.destroy();
+  window.myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Aquisição', 'Frete', 'Custo Fixo', 'Impostos/Taxas', 'Lucro'],
+      datasets: [{
+        data: [
+          custoAquisicao,
+          freteUnidade,
+          custoFixoUnitario,
+          valorImpostos + valorComissao + valorTaxaCartao,
+          valorLucro
+        ],
+        backgroundColor: ['#3498db', '#9b59b6', '#f1c40f', '#e67e22', '#2ecc71']
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
   });
 });
