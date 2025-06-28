@@ -3,63 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculadora de Preço de Venda | Tausystem</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <title>Calculadora de Precificação</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; transition: background 0.3s; }
+    .dark { background: #222; color: #eee; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem; }
+    th { background: #f0f0f0; }
+    .dark th { background: #333; }
+    .total { font-weight: bold; background: #e0e0e0; }
+    .dark .total { background: #444; }
+    button { margin: 1rem 0; padding: 0.5rem 1rem; }
+    input { margin: 0.3rem; padding: 0.4rem; width: 5rem; }
+  </style>
 </head>
 <body>
-  <header class="topo">
-    <img src="logo-tausystem.png" alt="Logo Tausystem" class="logo" />
-    <h1>Calculadora de Preço de Venda</h1>
-    <button id="toggle-theme" class="tema">🌗 Alternar Tema</button>
-  </header>
 
-  <section class="input-section">
-    <h2>Custos Fixos (mensal)</h2>
-    <div class="campo"><label for="c-energia">Energia:</label><input id="c-energia" type="number" /></div>
-    <div class="campo"><label for="c-agua">Água:</label><input id="c-agua" type="number" /></div>
-    <div class="campo"><label for="c-telefonia">Telefonia:</label><input id="c-telefonia" type="number" /></div>
-    <div class="campo"><label for="c-pessoal">Pessoal:</label><input id="c-pessoal" type="number" /></div>
-    <div class="campo"><label for="c-socios">Pró-labore/Sócios:</label><input id="c-socios" type="number" /></div>
-    <div class="campo"><label for="c-contabilidade">Contabilidade:</label><input id="c-contabilidade" type="number" /></div>
-    <div class="campo"><label for="c-depreciacao">Depreciação:</label><input id="c-depreciacao" type="number" /></div>
-    <div class="campo"><label for="c-internet">Internet:</label><input id="c-internet" type="number" /></div>
-    <div class="campo"><label for="c-outros-fixos">Outros Fixos:</label><input id="c-outros-fixos" type="number" /></div>
-  </section>
+  <button id="toggle-theme">🌗 Alternar Tema</button>
 
-  <section class="input-section">
-    <h2>Custos Variáveis (% do preço)</h2>
-    <div class="campo"><label for="v-impostos">Impostos (%):</label><input id="v-impostos" type="number" /></div>
-    <div class="campo"><label for="v-comissao">Comissão (%):</label><input id="v-comissao" type="number" /></div>
-    <div class="campo"><label for="v-taxa-cartao">Taxa Cartão (%):</label><input id="v-taxa-cartao" type="number" /></div>
-    <div class="campo"><label for="v-descontos">Descontos (%):</label><input id="v-descontos" type="number" /></div>
-  </section>
+  <h2>💰 Preço de Venda</h2>
+  <input type="number" id="precoVenda" placeholder="R$" />
 
-  <section class="input-section">
-    <h2>Dados do Produto</h2>
-    <div class="campo"><label for="p-custo-aquisicao">Custo Aquisição:</label><input id="p-custo-aquisicao" type="number" /></div>
-    <div class="campo"><label for="p-frete">Frete Unitário:</label><input id="p-frete" type="number" /></div>
-    <div class="campo"><label for="p-vendas-mes">Vendas/mês:</label><input id="p-vendas-mes" type="number" /></div>
-    <div class="campo"><label for="p-margem-lucro">Margem Lucro (%):</label><input id="p-margem-lucro" type="number" /></div>
-  </section>
+  <h3>📘 Custos Fixos</h3>
+  <input class="fixo" data-nome="Aluguel" id="fixo1" type="number" placeholder="Aluguel" />
+  <input class="fixo" data-nome="Salário" id="fixo2" type="number" placeholder="Salário" />
 
-  <div class="botoes">
-    <button id="calculate-btn">Calcular Preço de Venda</button>
-    <button id="clear-btn" class="secundario">Limpar Campos</button>
-    <button id="exportar-btn" class="secundario">Exportar Resultado (PDF)</button>
-  </div>
+  <h3>📙 Custos Variáveis (%)</h3>
+  <input class="variavel" data-nome="Comissão" id="var1" type="text" placeholder="10%" />
+  <input class="variavel" data-nome="Imposto" id="var2" type="text" placeholder="5%" />
 
-  <section id="result-card">
-    <div id="result-content"></div>
-    <canvas id="grafico" width="400" height="400"></canvas>
-  </section>
+  <br/><br/>
+  <button id="calcular">📊 Calcular</button>
 
-  <footer class="rodape">
-    <p>© <span id="ano-atual"></span> Tausystem do Brasil LTDA</p>
-    <p>CNPJ: 20.046.813/0001-20</p>
-    <p><a href="https://www.linkedin.com/company/tausystem/" target="_blank">LinkedIn Oficial</a></p>
-  </footer>
+  <div id="resultadoDetalhado"></div>
 
   <script src="script.js"></script>
 </body>
