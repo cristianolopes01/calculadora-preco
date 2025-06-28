@@ -10,13 +10,12 @@ h1, h2, h3 {
   color: #2c3e50;
 }
 input, select {
-  margin-top: 5px;
   width: 100%;
   padding: 8px;
   font-size: 14px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  margin-bottom: 10px;
+  margin: 5px 0 15px;
 }
 label {
   display: block;
