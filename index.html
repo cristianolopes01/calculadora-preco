@@ -4,47 +4,51 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculadora de Precificação</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <h1>📊 Simulador de Precificação</h1>
+  <h1>📊 Calculadora de Precificação</h1>
 
   <section>
-    <h2>Custos Fixos (Mensal)</h2>
-    <label>Energia Elétrica: <input type="number" id="c-energia" /></label>
-    <label>Água: <input type="number" id="c-agua" /></label>
-    <label>Telefonia: <input type="number" id="c-telefonia" /></label>
-    <label>Pessoal: <input type="number" id="c-pessoal" /></label>
-    <label>Remuneração Sócios: <input type="number" id="c-socios" /></label>
-    <label>Contabilidade: <input type="number" id="c-contabilidade" /></label>
-    <label>Depreciação: <input type="number" id="c-depreciacao" /></label>
-    <label>Internet: <input type="number" id="c-internet" /></label>
-    <label>Outros Fixos: <input type="number" id="c-outros-fixos" /></label>
+    <h2>💡 Custos Fixos (mensal)</h2>
+    <div class="campo"><label>Aluguel: <input type="number" id="c-aluguel" /></label></div>
+    <div class="campo"><label>Energia Elétrica: <input type="number" id="c-energia" /></label></div>
+    <div class="campo"><label>Água: <input type="number" id="c-agua" /></label></div>
+    <div class="campo"><label>Telefonia: <input type="number" id="c-telefonia" /></label></div>
+    <div class="campo"><label>Internet: <input type="number" id="c-internet" /></label></div>
+    <div class="campo"><label>Pessoal: <input type="number" id="c-pessoal" /></label></div>
+    <div class="campo"><label>Remuneração Sócios: <input type="number" id="c-socios" /></label></div>
+    <div class="campo"><label>Contabilidade: <input type="number" id="c-contabilidade" /></label></div>
+    <div class="campo"><label>Depreciações: <input type="number" id="c-depreciacao" /></label></div>
+    <div class="campo"><label>Outros Fixos: <input type="number" id="c-outros" /></label></div>
+    <p><strong>Total de Custos Fixos:</strong> <span id="total-fixos">R$ 0,00</span></p>
   </section>
 
   <section>
-    <h2>Custos Variáveis (% sobre venda)</h2>
-    <label>Impostos: <input type="number" id="v-impostos" /></label>
-    <label>Comissão: <input type="number" id="v-comissao" /></label>
-    <label>Taxa de Cartão: <input type="number" id="v-taxa-cartao" /></label>
-    <label>Descontos: <input type="number" id="v-descontos" /></label>
+    <h2>📉 Custos Variáveis (% sobre venda)</h2>
+    <div class="campo"><label>Impostos: <input type="number" id="v-impostos" /></label></div>
+    <div class="campo"><label>Comissões de Vendas: <input type="number" id="v-comissao" /></label></div>
+    <div class="campo"><label>Taxa de Cartão: <input type="number" id="v-cartao" /></label></div>
+    <div class="campo"><label>Descontos: <input type="number" id="v-descontos" /></label></div>
+    <p><strong>Total de Custos Variáveis:</strong> <span id="total-variaveis">0%</span></p>
   </section>
 
   <section>
-    <h2>Parâmetros</h2>
-    <label>Custo de Aquisição (R$): <input type="number" id="p-custo-aquisicao" /></label>
-    <label>Frete por Unidade (R$): <input type="number" id="p-frete" /></label>
-    <label>Vendas Mensais (unid.): <input type="number" id="p-vendas-mes" /></label>
-    <label>Margem de Lucro (%): <input type="number" id="p-margem-lucro" /></label>
+    <h2>⚙️ Parâmetros</h2>
+    <div class="campo"><label>Custo de Aquisição: <input type="number" id="p-custo" /></label></div>
+    <div class="campo"><label>Frete por Unidade: <input type="number" id="p-frete" /></label></div>
+    <div class="campo"><label>Unidades Vendidas por Mês: <input type="number" id="p-vendas" /></label></div>
+    <div class="campo"><label>Margem de Lucro Desejada (%): <input type="number" id="p-margem" /></label></div>
   </section>
 
-  <button id="calculate-btn">Calcular</button>
+  <button id="calcular">Calcular</button>
 
-  <div id="result-card" class="card">
-    <div id="result-content"></div>
+  <section id="resultado" class="card">
+    <h2>📋 Resultado</h2>
+    <div id="saida"></div>
     <canvas id="grafico" width="300" height="300"></canvas>
-  </div>
+  </section>
 
   <script src="script.js"></script>
 </body>
