@@ -1,4 +1,22 @@
 window.addEventListener('DOMContentLoaded', function () {
+  const inputs = document.querySelectorAll('input');
+
+  // Carrega valores salvos
+  inputs.forEach(input => {
+    const saved = localStorage.getItem(input.id);
+    if (saved !== null) {
+      input.value = saved;
+    }
+  });
+
+  // Salva enquanto digita
+  inputs.forEach(input => {
+    input.addEventListener('input', () => {
+      localStorage.setItem(input.id, input.value);
+    });
+  });
+
+  // Botão Calcular
   document.getElementById('calculate-btn').addEventListener('click', function () {
     const fixosIds = [
       'c-energia','c-agua','c-telefonia','c-pessoal',
@@ -77,5 +95,21 @@ window.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // Botão Limpar
+  document.getElementById('clear-btn').addEventListener('click', function () {
+    inputs.forEach(input => {
+      input.value = '';
+      localStorage.removeItem(input.id);
+    });
+
+    document.getElementById('result-content').innerHTML = '';
+    document.getElementById('result-card').classList.remove('mostrar');
+
+    const canvas = document.getElementById('grafico');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+
+  // Atualiza ano no rodapé
   document.getElementById('ano-atual').textContent = new Date().getFullYear();
 });
