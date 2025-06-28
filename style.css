@@ -58,6 +58,14 @@ h1 {
   border-radius: 4px;
 }
 
+.botoes {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 25px auto;
+  flex-wrap: wrap;
+}
+
 button {
   background: #0070f3;
   color: white;
@@ -65,13 +73,21 @@ button {
   padding: 12px 20px;
   border: none;
   border-radius: 5px;
-  display: block;
-  margin: 25px auto;
   cursor: pointer;
 }
 
 button:hover {
   background: #005bb5;
+}
+
+.secundario {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #bbb;
+}
+
+.secundario:hover {
+  background: #e0e0e0;
 }
 
 #result-card {
@@ -107,4 +123,43 @@ canvas {
 .rodape {
   background: #f0f0f0;
   padding: 20px;
-  text-align
+  text-align: center;
+  font-size: 0.9em;
+  color: #555;
+  border-top: 1px solid #ddd;
+}
+
+.rodape a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.rodape a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  .campo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .campo label,
+  .campo input {
+    width: 100%;
+    max-width: none;
+  }
+
+  .campo input {
+    margin-top: 4px;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+}
