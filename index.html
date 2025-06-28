@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Calculadora de Preço Estratégico</title>
+  <title>Calculadora Estratégica de Preço</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -20,37 +20,66 @@
   </section>
 
   <section class="bloco">
-    <h2>Simulação</h2>
+    <h2>📘 Custos Fixos</h2>
+    <label>Aluguel: <input type="number" id="fixo-aluguel" /></label>
+    <label>Energia: <input type="number" id="fixo-energia" /></label>
+    <label>Água: <input type="number" id="fixo-agua" /></label>
+    <label>Internet: <input type="number" id="fixo-internet" /></label>
+    <label>Telefonia: <input type="number" id="fixo-telefonia" /></label>
+    <label>Pessoal: <input type="number" id="fixo-pessoal" /></label>
+    <label>Sócios: <input type="number" id="fixo-socios" /></label>
+    <label>Assinaturas: <input type="number" id="fixo-assinaturas" /></label>
+    <label>Contabilidade: <input type="number" id="fixo-contabilidade" /></label>
+    <label>Manutenções: <input type="number" id="fixo-manutencoes" /></label>
+    <label>Refeições: <input type="number" id="fixo-refeicoes" /></label>
+    <label>Depreciações: <input type="number" id="fixo-depreciacoes" /></label>
+    <label>Outras: <input type="number" id="fixo-outras" /></label>
+  </section>
+
+  <section class="bloco">
+    <h2>📙 Custos Variáveis (% sobre Preço de Venda)</h2>
+    <label>Produção/Aquisição: <input type="number" id="variavel-producao" /></label>
+    <label>Impostos: <input type="number" id="variavel-impostos" /></label>
+    <label>Comissões: <input type="number" id="variavel-comissoes" /></label>
+    <label>Débito: <input type="number" id="variavel-debito" /></label>
+    <label>Fretes: <input type="number" id="variavel-fretes" /></label>
+    <label>Antecipação: <input type="number" id="variavel-antecipacao" /></label>
+    <label>Descontos: <input type="number" id="variavel-descontos" /></label>
+    <label>Outros: <input type="number" id="variavel-outros" /></label>
+    <label>Crédito: <input type="number" id="variavel-credito" /></label>
+  </section>
+
+  <section class="bloco">
+    <h2>💾 Simulações</h2>
     <label>Nome da Simulação: <input type="text" id="nome-simulacao" /></label>
     <button id="salvar-simulacao">Salvar Simulação</button>
 
     <label>Simulações Salvas:
-      <select id="lista-simulacoes">
-        <option value="">-- selecione --</option>
-      </select>
+      <select id="lista-simulacoes"><option value="">-- selecione --</option></select>
     </label>
     <button id="carregar-simulacao">Carregar</button>
-    <button id="gerar-pdf">Gerar PDF</button>
+    <button id="exportar-json">Exportar</button>
+    <input type="file" id="importar-json" accept=".json" />
   </section>
 
   <section class="bloco">
-    <h2>Comparar Simulações</h2>
+    <h2>📈 Comparar Simulações</h2>
     <label>Simulação A:
       <select id="comparar-a"></select>
     </label>
     <label>Simulação B:
       <select id="comparar-b"></select>
     </label>
-    <button id="comparar-simulacoes">Comparar Simulações</button>
+    <button id="comparar-simulacoes">Comparar</button>
   </section>
 
   <section class="bloco">
-    <h2>Importar/Exportar</h2>
-    <button id="exportar-json">Exportar Simulação</button>
-    <input type="file" id="importar-json" accept=".json" />
+    <button id="calcular">Calcular</button>
+    <button id="limpar">Limpar</button>
+    <button id="gerar-pdf">Gerar PDF</button>
   </section>
 
-  <section id="resultados" style="display:none;">
+  <section id="resultados" style="display: none;">
     <h2>📊 Relatórios</h2>
     <div id="relatorio-preco"></div>
     <div id="relatorio-fixos"></div>
@@ -59,16 +88,13 @@
   </section>
 
   <section class="bloco">
-    <h2>Gráficos</h2>
-    <h3>Custos Variáveis</h3>
+    <h2>📊 Gráficos</h2>
     <canvas id="grafico-variaveis" height="200"></canvas>
-
-    <h3>Comparativo Financeiro</h3>
     <canvas id="grafico-comparativo" height="200"></canvas>
   </section>
 
   <section class="bloco" id="relatorio-comparacao" style="display:none;">
-    <h2>🔍 Resultado da Comparação</h2>
+    <h2>🔍 Comparação</h2>
     <div id="tabela-comparacao"></div>
   </section>
 </body>
