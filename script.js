@@ -1,98 +1,104 @@
-document.getElementById('calculate-btn').addEventListener('click', function () {
-  const fixosIds = [
-    'c-energia',
-    'c-agua',
-    'c-telefonia',
-    'c-pessoal',
-    'c-socios',
-    'c-contabilidade',
-    'c-depreciacao',
-    'c-internet',
-    'c-outros-fixos',
-  ];
-  let totalCustosFixos = 0;
-  fixosIds.forEach((id) => {
-    totalCustosFixos += parseFloat(document.getElementById(id).value) || 0;
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("precificacao-form");
+  const pizzaSection = document.getElementById("grafico-section");
+  const ctx = document.getElementById("grafico-pizza").getContext("2d");
+  let chart;
 
-  const variaveisIds = ['v-impostos', 'v-comissao', 'v-taxa-cartao', 'v-descontos'];
-  let totalCustosVariaveisPercentual = 0;
-  variaveisIds.forEach((id) => {
-    totalCustosVariaveisPercentual += parseFloat(document.getElementById(id).value) || 0;
-  });
+  function calcular() {
+    // Fixos
+    const fixos = Array.from(document.querySelectorAll("#tabela-fixos tbody tr"));
+    let totalFixos = 0;
+    fixos.forEach(row => {
+      const val = parseFloat(row.querySelector("input").value) || 0;
+      totalFixos += val;
+    });
+    document.getElementById("total-fixos").textContent = `R$ ${totalFixos.toFixed(2)}`;
+    fixos.forEach(row => {
+      const val = parseFloat(row.querySelector("input").value) || 0;
+      const part = totalFixos > 0 ? (val / totalFixos) * 100 : 0;
+      row.querySelector(".participacao").textContent = `${part.toFixed(1)}%`;
+    });
 
-  const custoAquisicao = parseFloat(document.getElementById('p-custo-aquisicao').value) || 0;
-  const freteUnidade = parseFloat(document.getElementById('p-frete').value) || 0;
-  const vendasMes = parseInt(document.getElementById('p-vendas-mes').value) || 0;
-  const margemLucro = parseFloat(document.getElementById('p-margem-lucro').value) || 0;
+    // Variáveis
+    const variaveis = Array.from(document.querySelectorAll("#tabela-variaveis tbody tr"));
+    let totalVarPerc = 0;
+    variaveis.forEach(row => {
+      const perc = parseFloat(row.querySelector("input").value) || 0;
+      totalVarPerc += perc;
+    });
+    document.getElementById("total-variaveis").textContent = `${totalVarPerc.toFixed(2)}%`;
 
-  if (custoAquisicao === 0 || vendasMes === 0 || margemLucro === 0) {
-    alert('Preencha o Custo de Aquisição, Vendas Mensais e Margem de Lucro.');
-    return;
-  }
+    // Preço
+    const precoCompra = parseFloat(document.getElementById("preco-compra").value) || 0;
+    const precoVenda = parseFloat(document.getElementById("preco-venda").value) || 0;
+    const lucroBruto = precoVenda - precoCompra;
+    const margemBruta = precoVenda > 0 ? (lucroBruto / precoVenda) * 100 : 0;
+    const impostosPerc = parseFloat(document.getElementById("variavel-impostos").value) || 0;
+    const impostosValor = precoVenda * (impostosPerc / 100);
+    const lucroLiquido = lucroBruto - impostosValor;
+    const margemLiquida = precoVenda > 0 ? (lucroLiquido / precoVenda) * 100 : 0;
+    const margemContribuicao = precoVenda > 0 ? (lucroLiquido / precoVenda) * 100 : 0;
 
-  const custoFixoUnitario = totalCustosFixos / vendasMes;
-  const custoVariavelUnitario = custoAquisicao + freteUnidade;
-  const custoTotalUnitario = custoFixoUnitario + custoVariavelUnitario;
+    document.getElementById("lucro-bruto").textContent = `R$ ${lucroBruto.toFixed(2)}`;
+    document.getElementById("margem-bruta").textContent = `${margemBruta.toFixed(2)}%`;
+    document.getElementById("impostos-venda").textContent = `R$ ${impostosValor.toFixed(2)}`;
+    document.getElementById("lucro-liquido").textContent = `R$ ${lucroLiquido.toFixed(2)}`;
+    document.getElementById("margem-liquida").textContent = `${margemLiquida.toFixed(2)}%`;
+    document.getElementById("margem-contribuicao").textContent = `${margemContribuicao.toFixed(2)}%`;
 
-  const somaPercentuais = (totalCustosVariaveisPercentual + margemLucro) / 100;
+    // PE
+    const diasMes = parseInt(document.getElementById("dias-mes").value) || 26;
+    const qtdeEstimadas = parseFloat(document.getElementById("vendas-estimadas").value) || 0;
+    const margemUnitaria = precoVenda - precoCompra - impostosValor;
+    const peUnidades = margemUnitaria > 0 ? totalFixos / margemUnitaria : 0;
+    const peReais = precoVenda * peUnidades;
+    const peDia = peUnidades / diasMes;
+    const fatDia = precoVenda * (qtdeEstimadas / diasMes || 0);
 
-  if (somaPercentuais >= 1) {
-    alert('A soma dos percentuais não pode ser maior ou igual a 100%.');
-    return;
-  }
+    document.getElementById("pe-unidades").textContent = Math.ceil(peUnidades);
+    document.getElementById("pe-reais").textContent = `R$ ${peReais.toFixed(2)}`;
+    document.getElementById("pe-dia").textContent = Math.ceil(peDia);
+    document.getElementById("faturamento-dia").textContent = `R$ ${fatDia.toFixed(2)}`;
 
-  const precoDeVenda = custoTotalUnitario / (1 - somaPercentuais);
-  const valorImpostos = precoDeVenda * (parseFloat(document.getElementById('v-impostos').value) / 100);
-  const valorComissao = precoDeVenda * (parseFloat(document.getElementById('v-comissao').value) / 100);
-  const valorTaxaCartao = precoDeVenda * (parseFloat(document.getElementById('v-taxa-cartao').value) / 100);
-  const valorLucro = precoDeVenda * (margemLucro / 100);
-
-  const margemContribuicao = valorLucro + custoFixoUnitario;
-  const pontoEquilibrioUnidades = margemContribuicao > 0 ? totalCustosFixos / margemContribuicao : 0;
-  const diasUteis = 26;
-  const pontoEquilibrioDiario = pontoEquilibrioUnidades / diasUteis;
-
-  const resultCard = document.getElementById('result-card');
-  const resultContent = document.getElementById('result-content');
-
-  resultContent.innerHTML = `
-    <p class="result-price">💰 <strong>Preço de Venda Sugerido:</strong> <span>R$ ${precoDeVenda.toFixed(2)}</span></p>
-    <p class="result-detail"><strong>Composição do Preço:</strong></p>
-    <p class="result-detail">Custo de Aquisição: <span>R$ ${custoAquisicao.toFixed(2)}</span></p>
-    <p class="result-detail">Frete por Unidade: <span>R$ ${freteUnidade.toFixed(2)}</span></p>
-    <p class="result-detail">Custo Fixo por Unidade: <span>R$ ${custoFixoUnitario.toFixed(2)}</span></p>
-    <p class="result-detail">Impostos e Taxas: <span>R$ ${(valorImpostos + valorComissao + valorTaxaCartao).toFixed(2)}</span></p>
-    <p class="result-detail">Lucro Bruto por Unidade: <span>R$ ${valorLucro.toFixed(2)} (${margemLucro}%)</span></p>
-    <p class="result-detail"><strong>🎯 Ponto de Equilíbrio:</strong> <br>Unidades por mês: ${Math.ceil(pontoEquilibrioUnidades)} <br>Unidades por dia útil: ${Math.ceil(pontoEquilibrioDiario)}</p>
-  `;
-
-  resultCard.classList.add('mostrar');
-
-  // GRÁFICO
-  const ctx = document.getElementById('grafico').getContext('2d');
-  if (window.myChart) window.myChart.destroy();
-  window.myChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Aquisição', 'Frete', 'Custo Fixo', 'Impostos/Taxas', 'Lucro'],
-      datasets: [{
-        data: [
-          custoAquisicao,
-          freteUnidade,
-          custoFixoUnitario,
-          valorImpostos + valorComissao + valorTaxaCartao,
-          valorLucro
-        ],
-        backgroundColor: ['#3498db', '#9b59b6', '#f1c40f', '#e67e22', '#2ecc71']
-      }]
-    },
-    options: {
-      plugins: {
-        legend: {
-          position: 'bottom'
+    // Gráfico
+    const custosGrafico = [
+      { label: "Compra", valor: precoCompra, cor: "#3498db" },
+      { label: "Impostos", valor: impostosValor, cor: "#f39c12" },
+      { label: "Fixos por unidade", valor: totalFixos / (qtdeEstimadas || 1), cor: "#9b59b6" },
+      { label: "Lucro", valor: lucroLiquido, cor: "#2ecc71" }
+    ];
+    pizzaSection.style.display = "block";
+    if (chart) chart.destroy();
+    chart = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: custosGrafico.map(c => c.label),
+        datasets: [{
+          data: custosGrafico.map(c => c.valor),
+          backgroundColor: custosGrafico.map(c => c.cor)
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: "bottom"
+          }
         }
       }
-    }
+    });
+  }
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    calcular();
+  });
+
+  form.addEventListener("reset", () => {
+    setTimeout(() => {
+      document.querySelectorAll("td.participacao").forEach(td => td.textContent = "");
+      document.querySelectorAll("td[id]").forEach(td => td.textContent = "");
+      pizzaSection.style.display = "none";
+      if (chart) chart.destroy();
+    }, 100);
   });
 });
