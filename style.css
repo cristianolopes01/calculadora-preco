@@ -1,105 +1,103 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
-  padding: 2rem;
-  background: #f9f9f9;
-  color: #222;
-  transition: background 0.3s, color 0.3s;
+  font-family: Arial, sans-serif;
+  background: #f7f9fc;
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
 }
 
-.dark {
-  background: #1f1f1f;
-  color: #eee;
+.topo {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-h2, h3 {
-  margin-top: 2rem;
+.logo {
+  max-width: 180px;
+  height: auto;
+  margin-bottom: 10px;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1.5rem;
-  background: white;
-  box-shadow: 0 0 10px #ccc;
+h1 {
+  color: #2c3e50;
 }
 
-th, td {
-  padding: 0.8rem;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+.input-section {
+  background: #fff;
+  border-radius: 6px;
+  padding: 15px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
 }
 
-th {
-  background: #f3f3f3;
+.input-section h2 {
+  margin-top: 0;
+  font-size: 1.2em;
+  color: #34495e;
 }
 
-.dark th {
-  background: #333;
-  color: #fff;
+.campo {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
 }
 
-.total {
-  background: #f0f0f0;
+.campo label {
+  flex: 1;
   font-weight: bold;
+  color: #333;
+  margin-right: 10px;
 }
 
-.dark .total {
-  background: #444;
-}
-
-input {
-  margin: 0.3rem 0.6rem 0.3rem 0;
-  padding: 0.5rem;
-  width: 9rem;
-  font-size: 1rem;
+.campo input {
+  flex: 1;
+  max-width: 120px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 button {
-  margin-top: 1rem;
-  padding: 0.6rem 1.2rem;
-  background: #0078D4;
+  background: #0070f3;
   color: white;
+  font-size: 16px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 4px;
-  font-weight: bold;
+  border-radius: 5px;
+  display: block;
+  margin: 25px auto;
   cursor: pointer;
-  transition: background 0.3s ease;
 }
 
 button:hover {
-  background: #005a9e;
+  background: #005bb5;
 }
 
-.fixo-item,
-.variavel-item {
-  display: flex;
-  align-items: center;
-  margin: 0.5rem 0;
+#result-card {
+  background: #e6f4ea;
+  border: 1px solid #c8e6c9;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 20px;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
-.fixo-item label,
-.variavel-item label {
-  flex: 1;
-  font-weight: 500;
-  font-size: 1rem;
+#result-card.mostrar {
+  opacity: 1;
 }
 
-.fixo-item input,
-.variavel-item input {
-  width: 130px;
-  font-size: 1rem;
+.result-price span {
+  font-weight: bold;
+  font-size: 20px;
+  color: #1b5e20;
 }
 
-.porcentagem {
-  width: 60px;
-  font-size: 0.9rem;
-  color: #555;
-  text-align: right;
+.result-detail {
+  margin: 5px 0;
 }
 
-.simulador label,
-.pe-simulador label,
-.tabela-precos label {
+canvas {
   display: block;
-  margin: 0.6rem 0;
+  margin: 20px auto;
+  max-width: 100%;
 }
