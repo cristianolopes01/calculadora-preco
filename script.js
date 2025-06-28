@@ -7,14 +7,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const precoVenda = parseFloat(document.getElementById("preco-venda").value) || 0;
     const diasUteis = parseInt(document.getElementById("dias-uteis").value) || 22;
 
+    // Fixos
     const fixosIds = [
-      "fixo-aluguel", "fixo-energia", "fixo-agua", "fixo-internet", "fixo-telefonia",
-      "fixo-pessoal", "fixo-socios", "fixo-assinaturas", "fixo-contabilidade",
-      "fixo-manutencoes", "fixo-refeicoes", "fixo-depreciacoes", "fixo-outras"
+      { id: "fixo-aluguel", nome: "Aluguel" },
+      { id: "fixo-energia", nome: "Energia Elétrica" },
+      { id: "fixo-agua", nome: "Água" },
+      { id: "fixo-internet", nome: "Internet" },
+      { id: "fixo-telefonia", nome: "Telefonia" },
+      { id: "fixo-pessoal", nome: "Pessoal" },
+      { id: "fixo-socios", nome: "Remuneração Sócios" },
+      { id: "fixo-assinaturas", nome: "Assinaturas" },
+      { id: "fixo-contabilidade", nome: "Contabilidade" },
+      { id: "fixo-manutencoes", nome: "Manutenções" },
+      { id: "fixo-refeicoes", nome: "Refeições" },
+      { id: "fixo-depreciacoes", nome: "Depreciações" },
+      { id: "fixo-outras", nome: "Outras Despesas" }
     ];
-    const totalFixos = fixosIds.reduce((soma, id) => soma + (parseFloat(document.getElementById(id)?.value) || 0), 0);
 
-    const itensVariaveis = [
+    let totalFixos = 0;
+    const fixosCalculados = fixosIds.map(item => {
+      const valor = parseFloat(document.getElementById(item.id)?.value) || 0;
+      totalFixos += valor;
+      return { ...item, valor };
+    });
+
+    // Variáveis
+    const variaveisIds = [
       { id: "variavel-producao", nome: "Custo de Aquisição/Produção" },
       { id: "variavel-impostos", nome: "Impostos sobre faturamento" },
       { id: "variavel-comissoes", nome: "Comissões de Vendas" },
@@ -27,49 +45,28 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
     let totalVariaveisPercent = 0;
-    let tabelaVariaveis = `<h3>💡 Detalhamento dos Custos Variáveis por Unidade</h3><table border="1" cellspacing="0" cellpadding="6"><tr><th>Item</th><th>%</th><th>R$</th></tr>`;
-
-    itensVariaveis.forEach(item => {
+    const variaveisCalculadas = variaveisIds.map(item => {
       const percent = parseFloat(document.getElementById(item.id)?.value) || 0;
-      const valor = precoVenda * (percent / 100);
       totalVariaveisPercent += percent;
-      tabelaVariaveis += `<tr><td>${item.nome}</td><td>${percent.toFixed(2)}%</td><td>R$ ${valor.toFixed(2)}</td></tr>`;
+      return {
+        ...item,
+        percent,
+        valor: precoVenda * (percent / 100)
+      };
     });
 
+    // Preço
     const custoVariavelReais = precoVenda * (totalVariaveisPercent / 100);
-    tabelaVariaveis += `<tr><td><strong>Total</strong></td><td><strong>${totalVariaveisPercent.toFixed(2)}%</strong></td><td><strong>R$ ${custoVariavelReais.toFixed(2)}</strong></td></tr></table><br>`;
-
     const receitaBruta = precoVenda - precoCompra;
     const margemBruta = precoVenda ? (receitaBruta / precoVenda) * 100 : 0;
     const receitaLiquida = receitaBruta - custoVariavelReais;
     const margemLiquida = precoVenda ? (receitaLiquida / precoVenda) * 100 : 0;
-
     const mcu = receitaLiquida;
+
     const peUnidades = mcu > 0 ? totalFixos / mcu : 0;
     const peDiarioUnidades = diasUteis > 0 ? peUnidades / diasUteis : 0;
     const peDiarioReais = (margemLiquida > 0 && diasUteis > 0) ? totalFixos / (margemLiquida / 100) / diasUteis : 0;
 
-    const saida = document.getElementById("saida");
-    saida.innerHTML = `
-      <p><strong>📈 Receita Bruta:</strong> R$ ${receitaBruta.toFixed(2)}</p>
-      <p><strong>📊 Margem de Receita Bruta:</strong> ${margemBruta.toFixed(2)}%</p>
-      <p><strong>📥 Receita Líquida:</strong> R$ ${receitaLiquida.toFixed(2)}</p>
-      <p><strong>📊 Margem de Receita Líquida:</strong> ${margemLiquida.toFixed(2)}%</p>
-      <p><strong>🧮 Margem de Contribuição:</strong> ${margemLiquida.toFixed(2)}%</p>
-      <hr>
-      <p><strong>📦 Ponto de Equilíbrio (mensal):</strong> ${Math.ceil(peUnidades)} unidades</p>
-      <p><strong>📅 Por dia útil:</strong> ${Math.ceil(peDiarioUnidades)} unidades/dia</p>
-      <p><strong>💰 Faturamento diário necessário:</strong> R$ ${peDiarioReais.toFixed(2)}</p>
-      <hr>
-      ${tabelaVariaveis}
-    `;
-
-    document.getElementById("resultados").style.display = "block";
-  });
-
-  limpar.addEventListener("click", () => {
-    document.querySelectorAll("input").forEach(input => input.value = "");
-    document.getElementById("saida").innerHTML = "";
-    document.getElementById("resultados").style.display = "none";
-  });
-});
+    // Tabela de Preço
+    document.getElementById("relatorio-preco").innerHTML = `
+      <h3>📋 Tabela
