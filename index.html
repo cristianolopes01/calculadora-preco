@@ -3,46 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora de Precificação</title>
+  <title>Calculadora de Precificação Estratégica</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🧮 Calculadora de Precificação</h1>
+  <h1>🧮 Calculadora de Precificação Estratégica</h1>
 
-  <section id="parametros">
-    <label>Frete Unitário (R$): <input type="number" id="p-frete" /></label>
-    <label>Unidades Vendidas por Mês: <input type="number" id="p-vendas" /></label>
-    <label>Margem de Lucro Desejada (%): <input type="number" id="p-margem" /></label>
-    <label>Margem de Receita Desejada (%): <input type="number" id="desejada-margem-receita" value="40" /></label>
+  <section class="bloco">
+    <h2>💲 Preços</h2>
+    <label>Preço de Compra (R$): <input type="number" id="preco-compra" /></label>
+    <label>Preço de Venda (R$): <input type="number" id="preco-venda" /></label>
     <label>Dias Úteis no Mês: <input type="number" id="dias-uteis" value="22" /></label>
   </section>
 
-  <section>
-    <h2>📘 Custos Fixos</h2>
-    <div id="fixos-container"></div>
-    <p><strong>Total:</strong> <span id="total-fixos">R$ 0,00</span></p>
-
-    <h2>📙 Custos Variáveis (% sobre a venda)</h2>
-    <div id="variaveis-container"></div>
-    <p><strong>Total:</strong> <span id="total-variaveis">0%</span></p>
+  <section class="bloco">
+    <h2>📘 Custos Fixos (R$)</h2>
+    <div id="custos-fixos">
+      <label>Aluguel: <input type="number" id="fixo-aluguel" /></label>
+      <label>Energia Elétrica: <input type="number" id="fixo-energia" /></label>
+      <label>Água: <input type="number" id="fixo-agua" /></label>
+      <label>Internet: <input type="number" id="fixo-internet" /></label>
+      <label>Telefonia: <input type="number" id="fixo-telefonia" /></label>
+      <label>Pessoal: <input type="number" id="fixo-pessoal" /></label>
+      <label>Remuneração Sócios: <input type="number" id="fixo-socios" /></label>
+      <label>Assinaturas: <input type="number" id="fixo-assinaturas" /></label>
+      <label>Contabilidade: <input type="number" id="fixo-contabilidade" /></label>
+      <label>Manutenções: <input type="number" id="fixo-manutencoes" /></label>
+      <label>Refeições: <input type="number" id="fixo-refeicoes" /></label>
+      <label>Depreciações: <input type="number" id="fixo-depreciacoes" /></label>
+      <label>Outras Despesas: <input type="number" id="fixo-outras" /></label>
+    </div>
   </section>
 
-  <div id="botoes">
+  <section class="bloco">
+    <h2>📙 Custos Variáveis (% sobre a venda)</h2>
+    <div id="custos-variaveis">
+      <label>Custo de Aquisição/Produção: <input type="number" id="variavel-producao" /></label>
+      <label>Impostos sobre faturamento: <input type="number" id="variavel-impostos" /></label>
+      <label>Comissões de Vendas: <input type="number" id="variavel-comissoes" /></label>
+      <label>Taxa de Cartão – Débito: <input type="number" id="variavel-debito" /></label>
+      <label>Fretes: <input type="number" id="variavel-fretes" /></label>
+      <label>Taxa de Antecipação: <input type="number" id="variavel-antecipacao" /></label>
+      <label>Desconto de Vendas: <input type="number" id="variavel-descontos" /></label>
+      <label>Outros Custos Variáveis: <input type="number" id="variavel-outros" /></label>
+      <label>Taxa de Cartão – Crédito: <input type="number" id="variavel-credito" /></label>
+    </div>
+  </section>
+
+  <section class="bloco">
     <button id="calcular">Calcular</button>
     <button id="limpar">Limpar</button>
-    <button id="exportar">Exportar PDF</button>
-  </div>
-
-  <section id="resultado" style="display: none;">
-    <h2>📋 Resultado</h2>
-    <div id="saida"></div>
-    <div id="tabela-fixos"></div>
-    <div id="tabela-variaveis"></div>
-    <canvas id="grafico" width="400" height="400"></canvas>
   </section>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <section id="resultados" style="display: none;">
+    <h2>📊 Resultados</h2>
+    <div id="saida"></div>
+  </section>
+
   <script src="script.js"></script>
 </body>
 </html>
