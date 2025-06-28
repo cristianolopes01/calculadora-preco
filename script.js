@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const precoVenda = parseFloat(document.getElementById("preco-venda").value) || 0;
     const diasUteis = parseInt(document.getElementById("dias-uteis").value) || 22;
 
-    // Custos Fixos
+    // === Custos Fixos ===
     const fixosIds = [
       { id: "fixo-aluguel", nome: "Aluguel" },
       { id: "fixo-energia", nome: "Energia Elétrica" },
@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
       { id: "fixo-depreciacoes", nome: "Depreciações" },
       { id: "fixo-outras", nome: "Outras Despesas" }
     ];
-
     let totalFixos = 0;
     const fixos = fixosIds.map(item => {
       const valor = parseFloat(document.getElementById(item.id)?.value) || 0;
@@ -32,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     fixos.forEach(f => f.percentual = totalFixos > 0 ? (f.valor / totalFixos) * 100 : 0);
 
-    // Custos Variáveis
+    // === Custos Variáveis ===
     const variaveisIds = [
       { id: "variavel-producao", nome: "Custo de Aquisição/Produção" },
       { id: "variavel-impostos", nome: "Impostos sobre faturamento" },
@@ -59,55 +58,54 @@ document.addEventListener("DOMContentLoaded", () => {
       v.participacao = totalVariaveisPercent > 0 ? (v.percent / totalVariaveisPercent) * 100 : 0;
     });
 
-    // Cálculos principais
     const custoVariavelReais = precoVenda * (totalVariaveisPercent / 100);
     const receitaBruta = precoVenda - precoCompra;
     const margemBruta = precoVenda ? (receitaBruta / precoVenda) * 100 : 0;
     const receitaLiquida = receitaBruta - custoVariavelReais;
     const margemLiquida = precoVenda ? (receitaLiquida / precoVenda) * 100 : 0;
+
     const mcu = receitaLiquida;
     const peUnidades = mcu > 0 ? totalFixos / mcu : 0;
     const peDiarioUnidades = diasUteis > 0 ? peUnidades / diasUteis : 0;
     const peDiarioReais = (margemLiquida > 0 && diasUteis > 0) ? totalFixos / (margemLiquida / 100) / diasUteis : 0;
 
-    // Relatório Preços
+    // Exibir resultados
     document.getElementById("relatorio-preco").innerHTML = `
-      <h3>📋 Tabela de Preços & Margens</h3>
+      <h3>📋 Preços e Margens</h3>
       <table>
-        <tr><th>Item</th><th>Valor</th></tr>
         <tr><td>Preço de Compra</td><td>R$ ${precoCompra.toFixed(2)}</td></tr>
         <tr><td>Preço de Venda</td><td>R$ ${precoVenda.toFixed(2)}</td></tr>
         <tr><td>Receita Bruta</td><td>R$ ${receitaBruta.toFixed(2)}</td></tr>
-        <tr><td>Margem de Receita Bruta</td><td>${margemBruta.toFixed(2)}%</td></tr>
-        <tr><td>Custos Variáveis</td><td>R$ ${custoVariavelReais.toFixed(2)}</td></tr>
+        <tr><td>Margem Bruta</td><td>${margemBruta.toFixed(2)}%</td></tr>
+        <tr><td>Custos Variáveis (R$)</td><td>R$ ${custoVariavelReais.toFixed(2)}</td></tr>
         <tr><td>Receita Líquida</td><td>R$ ${receitaLiquida.toFixed(2)}</td></tr>
-        <tr><td>Margem Líquida</td><td>${margemLiquida.toFixed(2)}%</td></tr>
         <tr><td>Margem de Contribuição</td><td>${margemLiquida.toFixed(2)}%</td></tr>
-      </table><br>
+      </table>
     `;
 
-    // Relatório Fixos
-    let htmlFixos = `<h3>📘 Custos Fixos</h3><table><tr><th>Item</th><th>R$</th><th>%</th></tr>`;
-    fixos.forEach(f => {
-      htmlFixos += `<tr><td>${f.nome}</td><td>R$ ${f.valor.toFixed(2)}</td><td>${f.percentual.toFixed(2)}%</td></tr>`;
-    });
-    htmlFixos += `<tr><td><strong>Total</strong></td><td><strong>R$ ${totalFixos.toFixed(2)}</strong></td><td><strong>100%</strong></td></tr></table><br>`;
-    document.getElementById("relatorio-fixos").innerHTML = htmlFixos;
+    document.getElementById("relatorio-fixos").innerHTML = `
+      <h3>📘 Custos Fixos</h3>
+      <table>
+        <tr><th>Item</th><th>Valor</th><th>%</th></tr>
+        ${fixos.map(f => `<tr><td>${f.nome}</td><td>R$ ${f.valor.toFixed(2)}</td><td>${f.percentual.toFixed(2)}%</td></tr>`).join("")}
+        <tr><td><strong>Total</strong></td><td><strong>R$ ${totalFixos.toFixed(2)}</strong></td><td><strong>100%</strong></td></tr>
+      </table>
+    `;
 
-    // Relatório Variáveis
-    let htmlVar = `<h3>📙 Custos Variáveis</h3><table><tr><th>Item</th><th>%</th><th>R$</th><th>% participação</th></tr>`;
-    variaveis.forEach(v => {
-      htmlVar += `<tr><td>${v.nome}</td><td>${v.percent.toFixed(2)}%</td><td>R$ ${v.valor.toFixed(2)}</td><td>${v.participacao.toFixed(2)}%</td></tr>`;
-    });
-    htmlVar += `<tr><td><strong>Total</strong></td><td><strong>${totalVariaveisPercent.toFixed(2)}%</strong></td><td><strong>R$ ${custoVariavelReais.toFixed(2)}</strong></td><td><strong>100%</strong></td></tr></table><br>`;
-    document.getElementById("relatorio-variaveis").innerHTML = htmlVar;
+    document.getElementById("relatorio-variaveis").innerHTML = `
+      <h3>📙 Custos Variáveis</h3>
+      <table>
+        <tr><th>Item</th><th>%</th><th>R$</th><th>% Participação</th></tr>
+        ${variaveis.map(v => `<tr><td>${v.nome}</td><td>${v.percent.toFixed(2)}%</td><td>R$ ${v.valor.toFixed(2)}</td><td>${v.participacao.toFixed(2)}%</td></tr>`).join("")}
+        <tr><td><strong>Total</strong></td><td><strong>${totalVariaveisPercent.toFixed(2)}%</strong></td><td><strong>R$ ${custoVariavelReais.toFixed(2)}</strong></td><td><strong>100%</strong></td></tr>
+      </table>
+    `;
 
-    // Relatório Ponto de Equilíbrio
     document.getElementById("relatorio-equilibrio").innerHTML = `
       <h3>🎯 Ponto de Equilíbrio</h3>
       <table>
-        <tr><td>Em Unidades</td><td>${Math.ceil(peUnidades)}</td></tr>
-        <tr><td>Por Dia Útil</td><td>${Math.ceil(peDiarioUnidades)}</td></tr>
+        <tr><td>Mensal (Unidades)</td><td>${Math.ceil(peUnidades)}</td></tr>
+        <tr><td>Diário (Unidades)</td><td>${Math.ceil(peDiarioUnidades)}</td></tr>
         <tr><td>Faturamento Diário</td><td>R$ ${peDiarioReais.toFixed(2)}</td></tr>
       </table>
     `;
@@ -116,6 +114,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   limpar.addEventListener("click", () => {
-    document.querySelectorAll("input").forEach(input => (input.value = ""));
-    document.getElementById("resultados").style.display = "none";
-    ["relatorio-preco", "relatorio-fixos", "relatorio-vari
+    document.querySelectorAll("input").forEach(input => input.value = "");
+    ["relatorio-preco", "relatorio-fixos", "relatorio-variaveis", "relatorio-equilibrio"].forEach(id => {
+      document.getElementById(id).innerHTML = "";
+    });
+    document.getElement
