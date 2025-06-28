@@ -2,66 +2,74 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora de Precificação Estratégica</title>
+  <title>Calculadora de Preço Estratégico</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="script.js" defer></script>
 </head>
 <body>
-  <h1>🧮 Calculadora de Precificação Estratégica</h1>
+  <h1>📦 Calculadora Estratégica de Preço</h1>
 
   <section class="bloco">
-    <h2>💲 Preços</h2>
+    <h2>Parâmetros</h2>
     <label>Preço de Compra (R$): <input type="number" id="preco-compra" /></label>
     <label>Preço de Venda (R$): <input type="number" id="preco-venda" /></label>
     <label>Dias Úteis no Mês: <input type="number" id="dias-uteis" value="22" /></label>
+    <label>Imposto sobre Vendas (%): <input type="number" id="imposto-vendas" value="8" /></label>
   </section>
 
   <section class="bloco">
-    <h2>📘 Custos Fixos (R$)</h2>
-    <div id="custos-fixos">
-      <label>Aluguel: <input type="number" id="fixo-aluguel" /></label>
-      <label>Energia Elétrica: <input type="number" id="fixo-energia" /></label>
-      <label>Água: <input type="number" id="fixo-agua" /></label>
-      <label>Internet: <input type="number" id="fixo-internet" /></label>
-      <label>Telefonia: <input type="number" id="fixo-telefonia" /></label>
-      <label>Pessoal: <input type="number" id="fixo-pessoal" /></label>
-      <label>Remuneração Sócios: <input type="number" id="fixo-socios" /></label>
-      <label>Assinaturas: <input type="number" id="fixo-assinaturas" /></label>
-      <label>Contabilidade: <input type="number" id="fixo-contabilidade" /></label>
-      <label>Manutenções: <input type="number" id="fixo-manutencoes" /></label>
-      <label>Refeições: <input type="number" id="fixo-refeicoes" /></label>
-      <label>Depreciações: <input type="number" id="fixo-depreciacoes" /></label>
-      <label>Outras Despesas: <input type="number" id="fixo-outras" /></label>
-    </div>
+    <h2>Simulação</h2>
+    <label>Nome da Simulação: <input type="text" id="nome-simulacao" /></label>
+    <button id="salvar-simulacao">Salvar Simulação</button>
+
+    <label>Simulações Salvas:
+      <select id="lista-simulacoes">
+        <option value="">-- selecione --</option>
+      </select>
+    </label>
+    <button id="carregar-simulacao">Carregar</button>
+    <button id="gerar-pdf">Gerar PDF</button>
   </section>
 
   <section class="bloco">
-    <h2>📙 Custos Variáveis (% sobre a venda)</h2>
-    <div id="custos-variaveis">
-      <label>Custo de Aquisição/Produção: <input type="number" id="variavel-producao" /></label>
-      <label>Impostos sobre faturamento: <input type="number" id="variavel-impostos" /></label>
-      <label>Comissões de Vendas: <input type="number" id="variavel-comissoes" /></label>
-      <label>Taxa de Cartão – Débito: <input type="number" id="variavel-debito" /></label>
-      <label>Fretes: <input type="number" id="variavel-fretes" /></label>
-      <label>Taxa de Antecipação: <input type="number" id="variavel-antecipacao" /></label>
-      <label>Desconto de Vendas: <input type="number" id="variavel-descontos" /></label>
-      <label>Outros Custos Variáveis: <input type="number" id="variavel-outros" /></label>
-      <label>Taxa de Cartão – Crédito: <input type="number" id="variavel-credito" /></label>
-    </div>
+    <h2>Comparar Simulações</h2>
+    <label>Simulação A:
+      <select id="comparar-a"></select>
+    </label>
+    <label>Simulação B:
+      <select id="comparar-b"></select>
+    </label>
+    <button id="comparar-simulacoes">Comparar Simulações</button>
   </section>
 
   <section class="bloco">
-    <button id="calcular">Calcular</button>
-    <button id="limpar">Limpar</button>
+    <h2>Importar/Exportar</h2>
+    <button id="exportar-json">Exportar Simulação</button>
+    <input type="file" id="importar-json" accept=".json" />
   </section>
 
-  <section id="resultados" style="display: none;">
-    <h2>📊 Relatórios de Precificação</h2>
+  <section id="resultados" style="display:none;">
+    <h2>📊 Relatórios</h2>
     <div id="relatorio-preco"></div>
     <div id="relatorio-fixos"></div>
     <div id="relatorio-variaveis"></div>
     <div id="relatorio-equilibrio"></div>
+  </section>
+
+  <section class="bloco">
+    <h2>Gráficos</h2>
+    <h3>Custos Variáveis</h3>
+    <canvas id="grafico-variaveis" height="200"></canvas>
+
+    <h3>Comparativo Financeiro</h3>
+    <canvas id="grafico-comparativo" height="200"></canvas>
+  </section>
+
+  <section class="bloco" id="relatorio-comparacao" style="display:none;">
+    <h2>🔍 Resultado da Comparação</h2>
+    <div id="tabela-comparacao"></div>
   </section>
 </body>
 </html>
