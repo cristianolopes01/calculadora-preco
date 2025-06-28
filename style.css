@@ -15,10 +15,6 @@ h2, h3 {
   margin-top: 2rem;
 }
 
-header img {
-  max-width: 220px;
-}
-
 table {
   width: 100%;
   border-collapse: collapse;
@@ -42,7 +38,7 @@ th {
   color: #fff;
 }
 
-tfoot, .total {
+.total {
   background: #f0f0f0;
   font-weight: bold;
 }
@@ -54,7 +50,7 @@ tfoot, .total {
 input {
   margin: 0.3rem 0.6rem 0.3rem 0;
   padding: 0.5rem;
-  width: 10rem;
+  width: 9rem;
   font-size: 1rem;
 }
 
@@ -74,23 +70,36 @@ button:hover {
   background: #005a9e;
 }
 
+.fixo-item,
+.variavel-item {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.fixo-item label,
+.variavel-item label {
+  flex: 1;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.fixo-item input,
+.variavel-item input {
+  width: 130px;
+  font-size: 1rem;
+}
+
+.porcentagem {
+  width: 60px;
+  font-size: 0.9rem;
+  color: #555;
+  text-align: right;
+}
+
 .simulador label,
-.pe-simulador label {
+.pe-simulador label,
+.tabela-precos label {
   display: block;
   margin: 0.6rem 0;
-}
-
-.simulador input,
-.pe-simulador input {
-  margin-left: 0.5rem;
-}
-
-hr {
-  margin: 2rem 0;
-  border: none;
-  border-top: 1px solid #ccc;
-}
-
-.resumo-container {
-  margin-top: 2rem;
 }
