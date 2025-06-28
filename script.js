@@ -12,10 +12,16 @@ document.getElementById('calcular').addEventListener('click', function () {
 
   // Custos Variáveis
   const variaveisIds = [
-    'v-aquisicao', 'v-impostos', 'v-comissao',
-    'v-cartao-debito', 'v-cartao-credito',
-    'v-fretes', 'v-antecipacao', 'v-descontos', 'v-outros'
-  ];
+  'v-aquisicao',
+  'v-impostos',
+  'v-comissao',
+  'v-cartao-debito',
+  'v-fretes',
+  'v-antecipacao',
+  'v-descontos',
+  'v-outros',
+  'v-cartao-credito'
+];
   let totalVariaveisPerc = 0;
   variaveisIds.forEach(id => {
     totalVariaveisPerc += parseFloat(document.getElementById(id).value) || 0;
