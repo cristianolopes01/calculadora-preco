@@ -1,130 +1,175 @@
 document.addEventListener("DOMContentLoaded", () => {
   const calcular = document.getElementById("calcular");
   const limpar = document.getElementById("limpar");
+  const gerarPdf = document.getElementById("gerar-pdf");
+  const salvarBtn = document.getElementById("salvar-simulacao");
+  const carregarBtn = document.getElementById("carregar-simulacao");
+  const listaSelect = document.getElementById("lista-simulacoes");
+  const exportarJson = document.getElementById("exportar-json");
+  const importarJson = document.getElementById("importar-json");
 
-  // === Função principal de cálculo ===
+  let graficoPizza;
+  let graficoBarra;
+
   const executarCalculo = () => {
     const precoCompra = parseFloat(document.getElementById("preco-compra").value) || 0;
     const precoVenda = parseFloat(document.getElementById("preco-venda").value) || 0;
-    const diasUteis = parseInt(document.getElementById("dias-uteis").value) || 22;
+    const diasUteis = parseFloat(document.getElementById("dias-uteis").value) || 22;
+    const impostoAliquota = parseFloat(document.getElementById("imposto-vendas").value) || 0;
 
-    const fixosIds = [
-      { id: "fixo-aluguel", nome: "Aluguel" },
-      { id: "fixo-energia", nome: "Energia Elétrica" },
-      { id: "fixo-agua", nome: "Água" },
-      { id: "fixo-internet", nome: "Internet" },
-      { id: "fixo-telefonia", nome: "Telefonia" },
-      { id: "fixo-pessoal", nome: "Pessoal" },
-      { id: "fixo-socios", nome: "Remuneração Sócios" },
-      { id: "fixo-assinaturas", nome: "Assinaturas" },
-      { id: "fixo-contabilidade", nome: "Contabilidade" },
-      { id: "fixo-manutencoes", nome: "Manutenções" },
-      { id: "fixo-refeicoes", nome: "Refeições" },
-      { id: "fixo-depreciacoes", nome: "Depreciações" },
-      { id: "fixo-outras", nome: "Outras Despesas" }
-    ];
-
-    let totalFixos = 0;
-    const fixos = fixosIds.map(item => {
-      const valor = parseFloat(document.getElementById(item.id)?.value) || 0;
-      totalFixos += valor;
-      return { ...item, valor };
-    });
-    fixos.forEach(f => f.percentual = totalFixos > 0 ? (f.valor / totalFixos) * 100 : 0);
-
-    const variaveisIds = [
-      { id: "variavel-producao", nome: "Custo de Aquisição/Produção" },
-      { id: "variavel-impostos", nome: "Impostos sobre faturamento" },
-      { id: "variavel-comissoes", nome: "Comissões de Vendas" },
-      { id: "variavel-debito", nome: "Taxa de Cartão – Débito" },
-      { id: "variavel-fretes", nome: "Fretes" },
-      { id: "variavel-antecipacao", nome: "Taxa de Antecipação" },
-      { id: "variavel-descontos", nome: "Desconto de Vendas" },
-      { id: "variavel-outros", nome: "Outros Custos Variáveis" },
-      { id: "variavel-credito", nome: "Taxa de Cartão – Crédito" }
-    ];
-
-    let totalVariaveisPercent = 0;
-    const variaveis = variaveisIds.map(item => {
-      const percent = parseFloat(document.getElementById(item.id)?.value) || 0;
-      totalVariaveisPercent += percent;
-      return {
-        ...item,
-        percent,
-        valor: precoVenda * (percent / 100)
-      };
-    });
-    variaveis.forEach(v => {
-      v.participacao = totalVariaveisPercent > 0 ? (v.percent / totalVariaveisPercent) * 100 : 0;
-    });
-
-    const custoVariavelReais = precoVenda * (totalVariaveisPercent / 100);
+    const custoVar = precoVenda * 0.25; // exemplo fixo
+    const valorImposto = precoVenda * (impostoAliquota / 100);
     const receitaBruta = precoVenda - precoCompra;
-    const margemBruta = precoVenda ? (receitaBruta / precoVenda) * 100 : 0;
-    const receitaLiquida = receitaBruta - custoVariavelReais;
-    const margemLiquida = precoVenda ? (receitaLiquida / precoVenda) * 100 : 0;
+    const margemBruta = (receitaBruta / precoVenda) * 100;
+    const receitaLiquida = receitaBruta - custoVar - valorImposto;
+    const margemLiquida = (receitaLiquida / precoVenda) * 100;
+    const pontoEquilibrio = receitaLiquida > 0 ? (5000 / receitaLiquida) : 0; // fixo mensal fictício
+    const peDiario = diasUteis > 0 ? pontoEquilibrio / diasUteis : 0;
 
-    const mcu = receitaLiquida;
-    const peUnidades = mcu > 0 ? totalFixos / mcu : 0;
-    const peDiarioUnidades = diasUteis > 0 ? peUnidades / diasUteis : 0;
-    const peDiarioReais = (margemLiquida > 0 && diasUteis > 0) ? totalFixos / (margemLiquida / 100) / diasUteis : 0;
-
-    // Relatório Preço
     document.getElementById("relatorio-preco").innerHTML = `
-      <h3>📋 Preços e Margens</h3>
+      <h3>📋 Preço</h3>
       <table>
-        <tr><td>Preço de Compra</td><td>R$ ${precoCompra.toFixed(2)}</td></tr>
-        <tr><td>Preço de Venda</td><td>R$ ${precoVenda.toFixed(2)}</td></tr>
+        <tr><td>Preço Compra</td><td>R$ ${precoCompra.toFixed(2)}</td></tr>
+        <tr><td>Preço Venda</td><td>R$ ${precoVenda.toFixed(2)}</td></tr>
         <tr><td>Receita Bruta</td><td>R$ ${receitaBruta.toFixed(2)}</td></tr>
-        <tr><td>Margem Bruta</td><td>${margemBruta.toFixed(2)}%</td></tr>
-        <tr><td>Custos Variáveis</td><td>R$ ${custoVariavelReais.toFixed(2)}</td></tr>
+        <tr><td>Imposto (${impostoAliquota}%)</td><td>R$ ${valorImposto.toFixed(2)}</td></tr>
+        <tr><td>Custo Variável (25%)</td><td>R$ ${custoVar.toFixed(2)}</td></tr>
         <tr><td>Receita Líquida</td><td>R$ ${receitaLiquida.toFixed(2)}</td></tr>
-        <tr><td>Margem de Contribuição</td><td>${margemLiquida.toFixed(2)}%</td></tr>
-      </table>
-    `;
-
-    document.getElementById("relatorio-fixos").innerHTML = `
-      <h3>📘 Custos Fixos</h3>
-      <table>
-        <tr><th>Item</th><th>R$</th><th>%</th></tr>
-        ${fixos.map(f => `<tr><td>${f.nome}</td><td>R$ ${f.valor.toFixed(2)}</td><td>${f.percentual.toFixed(2)}%</td></tr>`).join("")}
-        <tr><td><strong>Total</strong></td><td><strong>R$ ${totalFixos.toFixed(2)}</strong></td><td><strong>100%</strong></td></tr>
-      </table>
-    `;
-
-    document.getElementById("relatorio-variaveis").innerHTML = `
-      <h3>📙 Custos Variáveis</h3>
-      <table>
-        <tr><th>Item</th><th>%</th><th>R$</th><th>% Participação</th></tr>
-        ${variaveis.map(v => `<tr><td>${v.nome}</td><td>${v.percent.toFixed(2)}%</td><td>R$ ${v.valor.toFixed(2)}</td><td>${v.participacao.toFixed(2)}%</td></tr>`).join("")}
-        <tr><td><strong>Total</strong></td><td><strong>${totalVariaveisPercent.toFixed(2)}%</strong></td><td><strong>R$ ${custoVariavelReais.toFixed(2)}</strong></td><td><strong>100%</strong></td></tr>
+        <tr><td>Margem Líquida</td><td>${margemLiquida.toFixed(2)}%</td></tr>
       </table>
     `;
 
     document.getElementById("relatorio-equilibrio").innerHTML = `
       <h3>🎯 Ponto de Equilíbrio</h3>
       <table>
-        <tr><td>Mensal (Unidades)</td><td>${Math.ceil(peUnidades)}</td></tr>
-        <tr><td>Diário (Unidades)</td><td>${Math.ceil(peDiarioUnidades)}</td></tr>
-        <tr><td>Faturamento Diário</td><td>R$ ${peDiarioReais.toFixed(2)}</td></tr>
+        <tr><td>Unidades no mês</td><td>${pontoEquilibrio.toFixed(0)}</td></tr>
+        <tr><td>Unidades por dia</td><td>${peDiario.toFixed(1)}</td></tr>
       </table>
     `;
 
     document.getElementById("resultados").style.display = "block";
+
+    // Pizza
+    if (graficoPizza) graficoPizza.destroy();
+    const pizzaCtx = document.getElementById("grafico-variaveis").getContext("2d");
+    graficoPizza = new Chart(pizzaCtx, {
+      type: "pie",
+      data: {
+        labels: ["Custo Variável", "Impostos", "Lucro Líquido"],
+        datasets: [{
+          data: [custoVar, valorImposto, receitaLiquida],
+          backgroundColor: ["#f39c12", "#c0392b", "#2ecc71"]
+        }]
+      }
+    });
+
+    // Barras
+    if (graficoBarra) graficoBarra.destroy();
+    const barraCtx = document.getElementById("grafico-comparativo").getContext("2d");
+    graficoBarra = new Chart(barraCtx, {
+      type: "bar",
+      data: {
+        labels: ["Bruta", "Líquida", "Ponto Equilíbrio Dia"],
+        datasets: [{
+          label: "R$",
+          data: [receitaBruta, receitaLiquida, peDiario],
+          backgroundColor: ["#3498db", "#2ecc71", "#9b59b6"]
+        }]
+      },
+      options: {
+        scales: { y: { beginAtZero: true } },
+        plugins: { legend: { display: false } }
+      }
+    });
   };
 
   calcular.addEventListener("click", executarCalculo);
 
-  limpar.addEventListener("click", () => {
-    document.querySelectorAll("input").forEach(input => input.value = "");
-    ["relatorio-preco", "relatorio-fixos", "relatorio-variaveis", "relatorio-equilibrio"].forEach(id => {
-      document.getElementById(id).innerHTML = "";
-    });
-    document.getElementById("resultados").style.display = "none";
-  });
-
-  // === CÁLCULO AUTOMÁTICO EM TEMPO REAL ===
   document.querySelectorAll("input[type='number']").forEach(input => {
     input.addEventListener("input", executarCalculo);
   });
-});
+
+  limpar?.addEventListener("click", () => {
+    document.querySelectorAll("input").forEach(input => input.value = "");
+    document.getElementById("resultados").style.display = "none";
+  });
+
+  gerarPdf?.addEventListener("click", () => {
+    const alvo = document.getElementById("resultados");
+    if (alvo.style.display === "none") return alert("Calcule primeiro.");
+    html2pdf().from(alvo).set({
+      margin: 10,
+      filename: `relatorio-${new Date().toLocaleDateString("pt-BR")}.pdf`,
+      jsPDF: { format: "a4", orientation: "portrait" }
+    }).save();
+  });
+
+  // Simulação JSON
+  const atualizarLista = () => {
+    listaSelect.innerHTML = `<option value="">-- selecione --</option>`;
+    Object.keys(localStorage).filter(k => k.startsWith("simulacao_")).forEach(chave => {
+      const opt = document.createElement("option");
+      opt.value = chave;
+      opt.textContent = chave.replace("simulacao_", "");
+      listaSelect.appendChild(opt);
+    });
+
+    ["comparar-a", "comparar-b"].forEach(id => {
+      const select = document.getElementById(id);
+      if (select) {
+        select.innerHTML = listaSelect.innerHTML;
+      }
+    });
+  };
+
+  salvarBtn?.addEventListener("click", () => {
+    const nome = document.getElementById("nome-simulacao").value.trim();
+    if (!nome) return alert("Dê um nome à simulação.");
+    const dados = {};
+    document.querySelectorAll("input[type='number']").forEach(input => {
+      dados[input.id] = input.value;
+    });
+    localStorage.setItem("simulacao_" + nome, JSON.stringify(dados));
+    alert("Simulação salva!");
+    atualizarLista();
+  });
+
+  carregarBtn?.addEventListener("click", () => {
+    const sel = listaSelect.value;
+    if (!sel) return alert("Selecione uma simulação.");
+    const dados = JSON.parse(localStorage.getItem(sel));
+    for (const [k, v] of Object.entries(dados)) {
+      const el = document.getElementById(k);
+      if (el) el.value = v;
+    }
+    executarCalculo();
+  });
+
+  document.getElementById("comparar-simulacoes")?.addEventListener("click", () => {
+    const a = document.getElementById("comparar-a").value;
+    const b = document.getElementById("comparar-b").value;
+    if (!a || !b || a === b) return alert("Selecione duas simulações diferentes.");
+
+    const simA = JSON.parse(localStorage.getItem(a));
+    const simB = JSON.parse(localStorage.getItem(b));
+
+    const get = (sim, id) => parseFloat(sim[id]) || 0;
+
+    const calc = (sim) => {
+      const venda = get(sim, "preco-venda");
+      const compra = get(sim, "preco-compra");
+      const imposto = get(sim, "imposto-vendas") / 100;
+      const varCusto = venda * 0.25;
+      const imp = venda * imposto;
+      const bruta = venda - compra;
+      const liquida = bruta - varCusto - imp;
+      const margem = venda ? (liquida / venda) * 100 : 0;
+      const peUnid = liquida > 0 ? 5000 / liquida : 0;
+      return { venda, liquida, margem, peUnid };
+    };
+
+    const rA = calc(simA);
+    const rB = calc(simB);
+
+    const linha = (label, va, vb, sufixo = "") =>
+      `<tr><td>${label}</
