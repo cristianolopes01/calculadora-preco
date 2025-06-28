@@ -1,7 +1,7 @@
 window.addEventListener('DOMContentLoaded', function () {
   const inputs = document.querySelectorAll('input');
 
-  // Carrega valores salvos
+  // Preenche campos com dados salvos
   inputs.forEach(input => {
     const saved = localStorage.getItem(input.id);
     if (saved !== null) {
@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Salva enquanto digita
+  // Salva em tempo real
   inputs.forEach(input => {
     input.addEventListener('input', () => {
       localStorage.setItem(input.id, input.value);
@@ -17,11 +17,12 @@ window.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Alternar tema
+  // Aplica tema escuro conforme preferência
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     document.body.classList.add('dark');
   }
 
+  // Alternar modo escuro
   document.getElementById('toggle-theme').addEventListener('click', () => {
     document.body.classList.toggle('dark');
   });
@@ -39,7 +40,6 @@ window.addEventListener('DOMContentLoaded', function () {
     const vendasMes = parseInt(document.getElementById('p-vendas-mes').value) || 0;
     const margemLucro = parseFloat(document.getElementById('p-margem-lucro').value) || 0;
 
-    // Validação visual
     ['p-custo-aquisicao', 'p-vendas-mes', 'p-margem-lucro'].forEach(id => {
       document.getElementById(id).classList.remove('erro');
     });
@@ -71,7 +71,6 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 
     const precoDeVenda = custoTotalUnitario / (1 - somaPercentuais);
-
     const valorImpostos = precoDeVenda * ((parseFloat(document.getElementById('v-impostos').value) || 0) / 100);
     const valorComissao = precoDeVenda * ((parseFloat(document.getElementById('v-comissao').value) || 0) / 100);
     const valorTaxaCartao = precoDeVenda * ((parseFloat(document.getElementById('v-taxa-cartao').value) || 0) / 100);
@@ -131,7 +130,7 @@ window.addEventListener('DOMContentLoaded', function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   });
 
-  // Exportar PDF
+  // Botão Exportar PDF
   document.getElementById('exportar-btn').addEventListener('click', () => {
     const resultCard = document.getElementById('result-card');
     if (!resultCard.classList.contains('mostrar')) {
@@ -150,6 +149,6 @@ window.addEventListener('DOMContentLoaded', function () {
     html2pdf().from(resultCard).set(opt).save();
   });
 
-  // Atualiza ano no rodapé
+  // Ano rodapé
   document.getElementById('ano-atual').textContent = new Date().getFullYear();
 });
