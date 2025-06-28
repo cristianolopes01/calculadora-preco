@@ -5,45 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculadora de Precificação</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-  <h1>📊 Calculadora de Precificação</h1>
+  <h1>🧮 Calculadora de Precificação</h1>
 
-  <section>
-    <h2>💡 Custos Fixos (R$)</h2>
-    <div id="fixos-container"></div>
-    <p><strong>Total:</strong> <span id="total-fixos">R$ 0,00</span></p>
+  <section id="parametros">
+    <label>Frete Unitário (R$): <input type="number" id="p-frete" /></label>
+    <label>Unidades Vendidas por Mês: <input type="number" id="p-vendas" /></label>
+    <label>Margem de Lucro Desejada (%): <input type="number" id="p-margem" /></label>
+    <label>Margem de Receita Desejada (%): <input type="number" id="desejada-margem-receita" value="40" /></label>
+    <label>Dias Úteis no Mês: <input type="number" id="dias-uteis" value="22" /></label>
   </section>
 
   <section>
-    <h2>📉 Custos Variáveis (% sobre venda)</h2>
+    <h2>📘 Custos Fixos</h2>
+    <div id="fixos-container"></div>
+    <p><strong>Total:</strong> <span id="total-fixos">R$ 0,00</span></p>
+
+    <h2>📙 Custos Variáveis (% sobre a venda)</h2>
     <div id="variaveis-container"></div>
     <p><strong>Total:</strong> <span id="total-variaveis">0%</span></p>
   </section>
 
-  <section>
-    <h2>⚙️ Parâmetros</h2>
-    <label>Frete por Unidade (R$): <input type="number" id="p-frete" /></label><br>
-    <label>Unidades Vendidas por Mês: <input type="number" id="p-vendas" /></label><br>
-    <label>Margem de Lucro Desejada (%): <input type="number" id="p-margem" /></label>
-  </section>
-
-  <div class="botoes">
+  <div id="botoes">
     <button id="calcular">Calcular</button>
     <button id="limpar">Limpar</button>
     <button id="exportar">Exportar PDF</button>
   </div>
 
-  <section id="resultado" class="card">
+  <section id="resultado" style="display: none;">
     <h2>📋 Resultado</h2>
     <div id="saida"></div>
-    <canvas id="grafico" width="300" height="300"></canvas>
     <div id="tabela-fixos"></div>
     <div id="tabela-variaveis"></div>
+    <canvas id="grafico" width="400" height="400"></canvas>
   </section>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
