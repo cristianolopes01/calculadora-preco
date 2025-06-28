@@ -11,6 +11,14 @@ body {
   color: #eee;
 }
 
+h2, h3 {
+  margin-top: 2rem;
+}
+
+header img {
+  max-width: 220px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -25,19 +33,29 @@ th, td {
   border-bottom: 1px solid #ddd;
 }
 
+th {
+  background: #f3f3f3;
+}
+
+.dark th {
+  background: #333;
+  color: #fff;
+}
+
 tfoot, .total {
   background: #f0f0f0;
   font-weight: bold;
 }
 
 .dark .total {
-  background: #333;
+  background: #444;
 }
 
 input {
   margin: 0.3rem 0.6rem 0.3rem 0;
-  padding: 0.4rem;
-  width: 7rem;
+  padding: 0.5rem;
+  width: 10rem;
+  font-size: 1rem;
 }
 
 button {
@@ -49,13 +67,30 @@ button {
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 button:hover {
   background: #005a9e;
 }
 
-.simulador label, .pe-simulador label {
+.simulador label,
+.pe-simulador label {
   display: block;
   margin: 0.6rem 0;
+}
+
+.simulador input,
+.pe-simulador input {
+  margin-left: 0.5rem;
+}
+
+hr {
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid #ccc;
+}
+
+.resumo-container {
+  margin-top: 2rem;
 }
