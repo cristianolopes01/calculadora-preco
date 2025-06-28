@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       { id: "fixo-depreciacoes", nome: "Depreciações" },
       { id: "fixo-outras", nome: "Outras Despesas" }
     ];
+
     let totalFixos = 0;
     const fixos = fixosIds.map(item => {
       const valor = parseFloat(document.getElementById(item.id)?.value) || 0;
@@ -69,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const peDiarioUnidades = diasUteis > 0 ? peUnidades / diasUteis : 0;
     const peDiarioReais = (margemLiquida > 0 && diasUteis > 0) ? totalFixos / (margemLiquida / 100) / diasUteis : 0;
 
-    // Exibir resultados
+    // === RELATÓRIOS ===
     document.getElementById("relatorio-preco").innerHTML = `
       <h3>📋 Preços e Margens</h3>
       <table>
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <tr><td>Preço de Venda</td><td>R$ ${precoVenda.toFixed(2)}</td></tr>
         <tr><td>Receita Bruta</td><td>R$ ${receitaBruta.toFixed(2)}</td></tr>
         <tr><td>Margem Bruta</td><td>${margemBruta.toFixed(2)}%</td></tr>
-        <tr><td>Custos Variáveis (R$)</td><td>R$ ${custoVariavelReais.toFixed(2)}</td></tr>
+        <tr><td>Custos Variáveis</td><td>R$ ${custoVariavelReais.toFixed(2)}</td></tr>
         <tr><td>Receita Líquida</td><td>R$ ${receitaLiquida.toFixed(2)}</td></tr>
         <tr><td>Margem de Contribuição</td><td>${margemLiquida.toFixed(2)}%</td></tr>
       </table>
@@ -86,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("relatorio-fixos").innerHTML = `
       <h3>📘 Custos Fixos</h3>
       <table>
-        <tr><th>Item</th><th>Valor</th><th>%</th></tr>
+        <tr><th>Item</th><th>R$</th><th>%</th></tr>
         ${fixos.map(f => `<tr><td>${f.nome}</td><td>R$ ${f.valor.toFixed(2)}</td><td>${f.percentual.toFixed(2)}%</td></tr>`).join("")}
         <tr><td><strong>Total</strong></td><td><strong>R$ ${totalFixos.toFixed(2)}</strong></td><td><strong>100%</strong></td></tr>
       </table>
@@ -106,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <table>
         <tr><td>Mensal (Unidades)</td><td>${Math.ceil(peUnidades)}</td></tr>
         <tr><td>Diário (Unidades)</td><td>${Math.ceil(peDiarioUnidades)}</td></tr>
-        <tr><td>Faturamento Diário</td><td>R$ ${peDiarioReais.toFixed(2)}</td></tr>
+        <tr><td>Faturamento Diário Necessário</td><td>R$ ${peDiarioReais.toFixed(2)}</td></tr>
       </table>
     `;
 
@@ -118,4 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ["relatorio-preco", "relatorio-fixos", "relatorio-variaveis", "relatorio-equilibrio"].forEach(id => {
       document.getElementById(id).innerHTML = "";
     });
-    document.getElement
+    document.getElementById("resultados").style.display = "none";
+  });
+});
