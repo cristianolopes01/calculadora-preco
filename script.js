@@ -1,13 +1,11 @@
 window.addEventListener('DOMContentLoaded', function () {
   const inputs = document.querySelectorAll('input');
 
-  // Recuperar dados salvos
   inputs.forEach(input => {
     const saved = localStorage.getItem(input.id);
     if (saved !== null) input.value = saved;
   });
 
-  // Salvar em tempo real
   inputs.forEach(input => {
     input.addEventListener('input', () => {
       input.value = input.value.replace(',', '.');
@@ -16,7 +14,6 @@ window.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Alternância de tema
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     document.body.classList.add('dark');
   }
@@ -71,18 +68,9 @@ window.addEventListener('DOMContentLoaded', function () {
     const htmlFixos = gerarTabelaCustosFixos(fixosCalculados);
     const htmlVariaveis = gerarTabelaCustosVariaveis(variaveisCalculadas);
     const container = document.createElement('div');
-    container.innerHTML = `
-      <button class="toggle-detalhes">Mostrar Detalhes</button>
-      <div class="bloco-detalhes" style="display:none">
-        ${htmlFixos}
-        <hr/>
-        ${htmlVariaveis}
-      </div>`;
+    container.classList.add('resumo-container');
+    container.innerHTML = `${htmlFixos}<hr/>${htmlVariaveis}`;
     divResultado.appendChild(container);
-    container.querySelector('.toggle-detalhes').addEventListener('click', () => {
-      const b = container.querySelector('.bloco-detalhes');
-      b.style.display = b.style.display === 'none' ? 'block' : 'none';
-    });
   }
 
   function coletarDadosFixos() {
@@ -119,26 +107,28 @@ window.addEventListener('DOMContentLoaded', function () {
     div.innerHTML = `
       <h3>📈 Ponto de Equilíbrio</h3>
       <table>
-        <tr><td>PE (R$):</td><td><strong>${formatCurrencyBR(resultado.peFaturamento)}</strong></td></tr>
-        <tr><td>Qtd a Vender:</td><td>${resultado.qtdVender}</td></tr>
-        <tr><td>Por Dia:</td><td>${resultado.porDia}</td></tr>
-        <tr><td>Faturamento Dia:</td><td>${formatCurrencyBR(resultado.fatDia)}</td></tr>
-      </table>`;
+        <tr><td>Ponto de Equilíbrio (R$):</td><td>${formatCurrencyBR(resultado.peFaturamento)}</td></tr>
+        <tr><td>Unidades a vender:</td><td>${resultado.qtdVender}</td></tr>
+        <tr><td>Vendas/dia (26 dias):</td><td>${resultado.porDia}</td></tr>
+        <tr><td>Faturamento por dia:</td><td>${formatCurrencyBR(resultado.fatDia)}</td></tr>
+      </table><br/>
+    `;
     document.getElementById('resultadoDetalhado').appendChild(div);
   }
 
   document.getElementById('calcular').addEventListener('click', () => {
     const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
-    const fixos = coletarDadosFixos();
-    const variaveis = coletarDadosVariaveis();
-    const fixosCalc = calcularParticipacaoFixos(fixos);
-    const variaveisCalc = calcularVariaveisEstimado(variaveis, precoVenda);
-    exibirResumoAnalitico(fixosCalc, variaveisCalc);
+    const custosFixos = coletarDadosFixos();
+    const custosVariaveis = coletarDadosVariaveis();
 
-    const totalPercVar = variaveis.reduce((acc, item) => acc + item.percentual, 0);
+    const fixosCalculados = calcularParticipacaoFixos(custosFixos);
+    const variaveisCalculadas = calcularVariaveisEstimado(custosVariaveis, precoVenda);
+    exibirResumoAnalitico(fixosCalculados, variaveisCalculadas);
+
+    const percentualTotalVariavel = custosVariaveis.reduce((acc, item) => acc + item.percentual, 0);
     const resultadoPE = calcularPontoEquilibrio(
-      fixos.reduce((acc, i) => acc + i.valor, 0),
-      totalPercVar,
+      fixosCalculados.reduce((acc, item) => acc + item.valor, 0),
+      percentualTotalVariavel,
       precoVenda
     );
     exibirPontoEquilibrio(resultadoPE);
@@ -171,4 +161,8 @@ window.addEventListener('DOMContentLoaded', function () {
     const fixos = parseFloat(document.getElementById('peFixos').value) || 0;
     const percVar = parseFloat(document.getElementById('peVariavel').value) / 100 || 0;
     const preco = parseFloat(document.getElementById('pePrecoVenda').value) || 1;
-    const dias = parse
+    const dias = parseInt(document.getElementById('peDiasMes').value) || 26;
+
+    const peFaturamento = fixos / (1 - percVar);
+    const qtdVender = Math.ceil(peFaturamento / preco);
+    const porDia
