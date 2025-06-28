@@ -13,20 +13,23 @@ window.addEventListener('DOMContentLoaded', function () {
   inputs.forEach(input => {
     input.addEventListener('input', () => {
       localStorage.setItem(input.id, input.value);
+      input.classList.remove('erro');
     });
+  });
+
+  // Alternar tema
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark');
+  }
+
+  document.getElementById('toggle-theme').addEventListener('click', () => {
+    document.body.classList.toggle('dark');
   });
 
   // Botão Calcular
   document.getElementById('calculate-btn').addEventListener('click', function () {
-    const fixosIds = [
-      'c-energia','c-agua','c-telefonia','c-pessoal',
-      'c-socios','c-contabilidade','c-depreciacao',
-      'c-internet','c-outros-fixos'
-    ];
-
-    const variaveisIds = [
-      'v-impostos','v-comissao','v-taxa-cartao','v-descontos'
-    ];
+    const fixosIds = ['c-energia','c-agua','c-telefonia','c-pessoal','c-socios','c-contabilidade','c-depreciacao','c-internet','c-outros-fixos'];
+    const variaveisIds = ['v-impostos','v-comissao','v-taxa-cartao','v-descontos'];
 
     let totalCustosFixos = fixosIds.reduce((acc, id) => acc + (parseFloat(document.getElementById(id).value) || 0), 0);
     let totalCustosVariaveisPercentual = variaveisIds.reduce((acc, id) => acc + (parseFloat(document.getElementById(id).value) || 0), 0);
@@ -36,8 +39,25 @@ window.addEventListener('DOMContentLoaded', function () {
     const vendasMes = parseInt(document.getElementById('p-vendas-mes').value) || 0;
     const margemLucro = parseFloat(document.getElementById('p-margem-lucro').value) || 0;
 
+    // Validação visual
+    ['p-custo-aquisicao', 'p-vendas-mes', 'p-margem-lucro'].forEach(id => {
+      document.getElementById(id).classList.remove('erro');
+    });
+
     if (custoAquisicao === 0 || vendasMes === 0 || margemLucro === 0) {
-      alert('Preencha o Custo de Aquisição, Vendas Mensais e Margem de Lucro.');
+      const campos = [
+        { id: 'p-custo-aquisicao', valor: custoAquisicao },
+        { id: 'p-vendas-mes', valor: vendasMes },
+        { id: 'p-margem-lucro', valor: margemLucro }
+      ];
+      for (const campo of campos) {
+        if (campo.valor === 0) {
+          const input = document.getElementById(campo.id);
+          input.classList.add('erro');
+          input.focus();
+          break;
+        }
+      }
       return;
     }
 
@@ -100,6 +120,7 @@ window.addEventListener('DOMContentLoaded', function () {
     inputs.forEach(input => {
       input.value = '';
       localStorage.removeItem(input.id);
+      input.classList.remove('erro');
     });
 
     document.getElementById('result-content').innerHTML = '';
@@ -108,6 +129,25 @@ window.addEventListener('DOMContentLoaded', function () {
     const canvas = document.getElementById('grafico');
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+
+  // Exportar PDF
+  document.getElementById('exportar-btn').addEventListener('click', () => {
+    const resultCard = document.getElementById('result-card');
+    if (!resultCard.classList.contains('mostrar')) {
+      alert('Calcule o preço antes de exportar.');
+      return;
+    }
+
+    const opt = {
+      margin: 0.5,
+      filename: 'resultado-preco-venda.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().from(resultCard).set(opt).save();
   });
 
   // Atualiza ano no rodapé
