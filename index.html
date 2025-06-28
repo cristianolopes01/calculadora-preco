@@ -3,67 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculadora de Precificação – Tausystem do Brasil</title>
+  <title>Calculadora de Preço de Venda | Tausystem</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
-  <header style="text-align:center; margin-bottom: 2rem;">
-    <img src="logo-tausystem.png" alt="Tausystem do Brasil" style="max-width: 220px;" />
+  <header class="topo">
+    <img src="logo-tausystem.png" alt="Logo Tausystem" class="logo" />
+    <h1>Calculadora de Preço de Venda</h1>
   </header>
 
-  <button id="toggle-theme">🌗 Alternar Tema</button>
+  <section class="input-section">
+    <h2>Custos Fixos (mensal)</h2>
+    <div class="campo"><label for="c-energia">Energia:</label><input id="c-energia" type="number" /></div>
+    <div class="campo"><label for="c-agua">Água:</label><input id="c-agua" type="number" /></div>
+    <div class="campo"><label for="c-telefonia">Telefonia:</label><input id="c-telefonia" type="number" /></div>
+    <div class="campo"><label for="c-pessoal">Pessoal:</label><input id="c-pessoal" type="number" /></div>
+    <div class="campo"><label for="c-socios">Pró-labore/Sócios:</label><input id="c-socios" type="number" /></div>
+    <div class="campo"><label for="c-contabilidade">Contabilidade:</label><input id="c-contabilidade" type="number" /></div>
+    <div class="campo"><label for="c-depreciacao">Depreciação:</label><input id="c-depreciacao" type="number" /></div>
+    <div class="campo"><label for="c-internet">Internet:</label><input id="c-internet" type="number" /></div>
+    <div class="campo"><label for="c-outros-fixos">Outros:</label><input id="c-outros-fixos" type="number" /></div>
+  </section>
 
-  <h2>💰 Preço de Venda</h2>
-  <input type="number" id="precoVenda" placeholder="R$" />
+  <section class="input-section">
+    <h2>Custos Variáveis (% do preço)</h2>
+    <div class="campo"><label for="v-impostos">Impostos (%):</label><input id="v-impostos" type="number" /></div>
+    <div class="campo"><label for="v-comissao">Comissão (%):</label><input id="v-comissao" type="number" /></div>
+    <div class="campo"><label for="v-taxa-cartao">Taxa Cartão (%):</label><input id="v-taxa-cartao" type="number" /></div>
+    <div class="campo"><label for="v-descontos">Descontos (%):</label><input id="v-descontos" type="number" /></div>
+  </section>
 
-  <!-- Custos Fixos -->
-  <h3>📘 Custos Fixos</h3>
-  <div id="custos-fixos">
-    <!-- Bloco de 13 campos com labels, inputs e spans gerados dinamicamente pelo script -->
-  </div>
+  <section class="input-section">
+    <h2>Dados do Produto</h2>
+    <div class="campo"><label for="p-custo-aquisicao">Custo Aquisição:</label><input id="p-custo-aquisicao" type="number" /></div>
+    <div class="campo"><label for="p-frete">Frete Unitário:</label><input id="p-frete" type="number" /></div>
+    <div class="campo"><label for="p-vendas-mes">Vendas/Mês:</label><input id="p-vendas-mes" type="number" /></div>
+    <div class="campo"><label for="p-margem-lucro">Margem Lucro (%):</label><input id="p-margem-lucro" type="number" /></div>
+  </section>
 
-  <!-- Custos Variáveis -->
-  <h3>📙 Custos Variáveis (%)</h3>
-  <div id="custos-variaveis">
-    <!-- Bloco de 9 campos com labels, inputs e spans gerados dinamicamente pelo script -->
-  </div>
+  <button id="calculate-btn">Calcular Preço de Venda</button>
 
-  <br/><button id="calcular">📊 Calcular</button>
-  <div id="resultadoDetalhado"></div>
-
-  <!-- Simulador de Preço -->
-  <hr/>
-  <h3>🧮 Simulador de Preço de Venda</h3>
-  <div class="simulador">
-    <label>Preço de Compra (R$): <input type="number" id="precoCompra" value="20" /></label>
-    <label>Margem de Lucro Desejada (%): <input type="number" id="margemDesejada" value="40" /></label>
-    <label>Impostos (%): <input type="number" id="impostos" value="10.58" /></label>
-    <button onclick="simularPreco()">Simular</button>
-    <div id="resultadoSimulacao"></div>
-  </div>
-
-  <!-- Simulador de Ponto de Equilíbrio -->
-  <hr/>
-  <h3>📈 Simulador de Ponto de Equilíbrio</h3>
-  <div class="pe-simulador">
-    <label>Custos Fixos (R$): <input type="number" id="peFixos" value="11020.00" /></label>
-    <label>% Custos Variáveis: <input type="number" id="peVariavel" value="18.00" /></label>
-    <label>Preço Unitário (R$): <input type="number" id="pePrecoVenda" value="28.00" /></label>
-    <label>Dias no Mês: <input type="number" id="peDiasMes" value="26" /></label>
-    <button onclick="calcularSimulacaoPE()">Simular Ponto de Equilíbrio</button>
-    <div id="peResultado"></div>
-  </div>
-
-  <!-- Tabela de Preço Detalhada -->
-  <hr/>
-  <h3>📦 Tabela de Preços Detalhada</h3>
-  <div class="tabela-precos">
-    <label>Preço de Compra (R$): <input type="number" id="tPrecoCompra" step="0.01" /></label>
-    <label>Preço de Venda (R$): <input type="number" id="tPrecoVenda" step="0.01" /></label>
-    <button onclick="calcularTabelaPreco()">🧮 Calcular Tabela de Preços</button>
-  </div>
-  <div id="resultadoTabelaPreco"></div>
+  <section id="result-card">
+    <div id="result-content"></div>
+    <canvas id="grafico" width="400" height="400"></canvas>
+  </section>
 
   <script src="script.js"></script>
 </body>
