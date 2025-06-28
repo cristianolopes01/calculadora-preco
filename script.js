@@ -89,10 +89,10 @@ document.getElementById('calcular').addEventListener('click', () => {
   document.getElementById('tabela-fixos').innerHTML = htmlFixos;
 
   // Tabela variáveis
-  let htmlVar = `<h3>📙 Tabela de Custos Variáveis</h3><table><tr><th>Item</th><th>Percentual</th><th>Participação</th></tr>`;
+ let htmlVar = `<h3>📙 Tabela de Custos Variáveis</h3><table><tr><th>Item</th><th>Percentual</th><th>Participação</th></tr>`;
   variaveis.forEach(v => {
-    const perc = totalVariaveis > 0 ? (v.valor / totalVariaveis) * 100 : 0;
-    htmlVar += `<tr><td>${v.nome}</td><td>${v.valor.toFixed(2)}%</td><td>${perc.toFixed(1)}%</td></tr>`;
+  const perc = totalVariaveis > 0 ? (v.valor / totalVariaveis) * 100 : 0;
+  htmlVar += `<tr><td>${v.nome}</td><td>${v.valor.toFixed(2)}%</td><td>${perc.toFixed(1)}%</td></tr>`;
   });
   htmlVar += `<tr><td><strong>Total</strong></td><td><strong>${totalVariaveis.toFixed(2)}%</strong></td><td><strong>100%</strong></td></tr></table>`;
   document.getElementById('tabela-variaveis').innerHTML = htmlVar;
