@@ -6,11 +6,13 @@
   <title>Calculadora de Preço de Venda | Tausystem</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
   <header class="topo">
     <img src="logo-tausystem.png" alt="Logo Tausystem" class="logo" />
     <h1>Calculadora de Preço de Venda</h1>
+    <button id="toggle-theme" class="tema">🌗 Alternar Tema</button>
   </header>
 
   <section class="input-section">
@@ -45,6 +47,7 @@
   <div class="botoes">
     <button id="calculate-btn">Calcular Preço de Venda</button>
     <button id="clear-btn" class="secundario">Limpar Campos</button>
+    <button id="exportar-btn" class="secundario">Exportar Resultado (PDF)</button>
   </div>
 
   <section id="result-card">
