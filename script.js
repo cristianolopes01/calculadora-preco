@@ -28,128 +28,103 @@ window.addEventListener('DOMContentLoaded', function () {
     document.body.classList.toggle('dark');
   });
 
-  // Calcular
-  document.getElementById('calculate-btn').addEventListener('click', function () {
-    const fixosIds = ['c-energia','c-agua','c-telefonia','c-pessoal','c-socios','c-contabilidade','c-depreciacao','c-internet','c-outros-fixos'];
-    const variaveisIds = ['v-impostos','v-comissao','v-taxa-cartao','v-descontos'];
-
-    let totalCustosFixos = fixosIds.reduce((acc, id) => acc + (parseFloat(document.getElementById(id).value) || 0), 0);
-    let totalCustosVariaveisPercentual = variaveisIds.reduce((acc, id) => acc + (parseFloat(document.getElementById(id).value) || 0), 0);
-
-    const custoAquisicao = parseFloat(document.getElementById('p-custo-aquisicao').value) || 0;
-    const freteUnidade = parseFloat(document.getElementById('p-frete').value) || 0;
-    const vendasMes = parseInt(document.getElementById('p-vendas-mes').value) || 0;
-    const margemLucro = parseFloat(document.getElementById('p-margem-lucro').value) || 0;
-
-    ['p-custo-aquisicao', 'p-vendas-mes', 'p-margem-lucro'].forEach(id => {
-      document.getElementById(id).classList.remove('erro');
+  function formatCurrencyBR(value) {
+    return value.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
     });
+  }
 
-    if (custoAquisicao === 0 || vendasMes === 0 || margemLucro === 0) {
-      const campos = [
-        { id: 'p-custo-aquisicao', valor: custoAquisicao },
-        { id: 'p-vendas-mes', valor: vendasMes },
-        { id: 'p-margem-lucro', valor: margemLucro }
-      ];
-      for (const campo of campos) {
-        if (campo.valor === 0) {
-          const input = document.getElementById(campo.id);
-          input.classList.add('erro');
-          input.focus();
-          break;
-        }
-      }
-      return;
-    }
+  function calcularParticipacaoFixos(custosFixos) {
+    const total = custosFixos.reduce((acc, item) => acc + item.valor, 0);
+    return custosFixos.map(item => ({
+      ...item,
+      participacao: total ? (item.valor / total * 100) : 0
+    }));
+  }
 
-    const custoFixoUnitario = totalCustosFixos / vendasMes;
-    const custoTotalUnitario = custoAquisicao + freteUnidade + custoFixoUnitario;
-    const somaPercentuais = (totalCustosVariaveisPercentual + margemLucro) / 100;
-
-    if (somaPercentuais >= 1) {
-      alert('A soma dos percentuais não pode ser maior ou igual a 100%.');
-      return;
-    }
-
-    const precoDeVenda = custoTotalUnitario / (1 - somaPercentuais);
-    const valorImpostos = precoDeVenda * ((parseFloat(document.getElementById('v-impostos').value) || 0) / 100);
-    const valorComissao = precoDeVenda * ((parseFloat(document.getElementById('v-comissao').value) || 0) / 100);
-    const valorTaxaCartao = precoDeVenda * ((parseFloat(document.getElementById('v-taxa-cartao').value) || 0) / 100);
-    const valorLucro = precoDeVenda * (margemLucro / 100);
-
-    const formatar = valor => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-    const resultContent = document.getElementById('result-content');
-    resultContent.innerHTML = `
-      <p class="result-price">Preço de Venda Sugerido: <span>${formatar(precoDeVenda)}</span></p>
-      <p class="result-detail"><strong>Composição do Preço:</strong></p>
-      <p class="result-detail">Custo de Aquisição/Produção: <span>${formatar(custoAquisicao)}</span></p>
-      <p class="result-detail">Custo Fixo Unitário: <span>${formatar(custoFixoUnitario)}</span></p>
-      <p class="result-detail">Impostos/Taxas: <span>${formatar(valorImpostos + valorComissao + valorTaxaCartao)}</span></p>
-      <p class="result-detail">Lucro Bruto: <span>${formatar(valorLucro)} (${margemLucro}%)</span></p>
-    `;
-
-    document.getElementById('result-card').classList.add('mostrar');
-
-    const ctx = document.getElementById('grafico').getContext('2d');
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Aquisição', 'Fixos', 'Impostos/Taxas', 'Lucro'],
-        datasets: [{
-          data: [
-            custoAquisicao,
-            custoFixoUnitario,
-            valorImpostos + valorComissao + valorTaxaCartao,
-            valorLucro
-          ],
-          backgroundColor: ['#42a5f5', '#66bb6a', '#ffa726', '#ab47bc']
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'bottom' }
-        }
-      }
+  function gerarTabelaCustosFixos(fixosCalculados) {
+    let total = fixosCalculados.reduce((acc, item) => acc + item.valor, 0);
+    let html = `<h3>📘 Composição de Custos Fixos</h3><table><thead><tr>
+      <th>Item</th><th>Valor</th><th>% Participação</th></tr></thead><tbody>`;
+    fixosCalculados.forEach(item => {
+      html += `<tr><td>${item.nome}</td><td>${formatCurrencyBR(item.valor)}</td>
+      <td>${item.participacao.toFixed(1)}%</td></tr>`;
     });
-  });
+    html += `<tr class="total"><td><strong>Total</strong></td>
+      <td><strong>${formatCurrencyBR(total)}</strong></td><td><strong>100%</strong></td></tr></tbody></table>`;
+    return html;
+  }
 
-  // Limpar
-  document.getElementById('clear-btn').addEventListener('click', function () {
-    inputs.forEach(input => {
-      input.value = '';
-      localStorage.removeItem(input.id);
-      input.classList.remove('erro');
+  function calcularVariaveisEstimado(custosVariaveis, precoVenda) {
+    return custosVariaveis.map(item => ({
+      ...item,
+      valorEstimado: precoVenda * item.percentual
+    }));
+  }
+
+  function gerarTabelaCustosVariaveis(variaveisCalculadas) {
+    const totalPercentual = variaveisCalculadas.reduce((acc, item) => acc + item.percentual, 0);
+    const totalEstimado = variaveisCalculadas.reduce((acc, item) => acc + item.valorEstimado, 0);
+    let html = `<h3>📙 Composição de Custos Variáveis</h3><table><thead><tr>
+      <th>Item</th><th>%</th><th>Valor Estimado (R$)</th></tr></thead><tbody>`;
+    variaveisCalculadas.forEach(item => {
+      html += `<tr><td>${item.nome}</td><td>${(item.percentual * 100).toFixed(2)}%</td>
+        <td>${formatCurrencyBR(item.valorEstimado)}</td></tr>`;
     });
+    html += `<tr class="total"><td><strong>Total</strong></td><td><strong>${(totalPercentual * 100).toFixed(2)}%</strong></td>
+      <td><strong>${formatCurrencyBR(totalEstimado)}</strong></td></tr></tbody></table>`;
+    return html;
+  }
 
-    document.getElementById('result-content').innerHTML = '';
-    document.getElementById('result-card').classList.remove('mostrar');
+  function exibirResumoAnalitico(fixosCalculados, variaveisCalculadas) {
+    const divResultado = document.getElementById('resultadoDetalhado');
+    divResultado.innerHTML = '';
+    const htmlFixos = gerarTabelaCustosFixos(fixosCalculados);
+    const htmlVariaveis = gerarTabelaCustosVariaveis(variaveisCalculadas);
+    const container = document.createElement('div');
+    container.classList.add('resumo-container');
+    container.innerHTML = `
+      <button class="toggle-detalhes">📂 Mostrar/Esconder Detalhes</button>
+      <div class="bloco-detalhes" style="display: none;">
+        ${htmlFixos}
+        <hr/>
+        ${htmlVariaveis}
+      </div>`;
+    divResultado.appendChild(container);
+    const btnToggle = container.querySelector('.toggle-detalhes');
+    const blocoDetalhes = container.querySelector('.bloco-detalhes');
+    btnToggle.addEventListener('click', () => {
+      blocoDetalhes.style.display = blocoDetalhes.style.display === 'none' ? 'block' : 'none';
+    });
+  }
 
-    const canvas = document.getElementById('grafico');
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  function coletarDadosFixos() {
+    const fixos = [];
+    document.querySelectorAll('.fixo').forEach(input => {
+      const nome = input.dataset.nome;
+      const valor = parseFloat(input.value) || 0;
+      fixos.push({ nome, valor });
+    });
+    return fixos;
+  }
+
+  function coletarDadosVariaveis() {
+    const variaveis = [];
+    document.querySelectorAll('.variavel').forEach(input => {
+      const nome = input.dataset.nome;
+      const percentual = parseFloat(input.value.replace('%', '').replace(',', '.')) / 100 || 0;
+      variaveis.push({ nome, percentual });
+    });
+    return variaveis;
+  }
+
+  document.getElementById('calcular').addEventListener('click', () => {
+    const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
+    const custosFixos = coletarDadosFixos();
+    const custosVariaveis = coletarDadosVariaveis();
+    const fixosCalculados = calcularParticipacaoFixos(custosFixos);
+    const variaveisCalculadas = calcularVariaveisEstimado(custosVariaveis, precoVenda);
+    exibirResumoAnalitico(fixosCalculados, variaveisCalculadas);
   });
-
-  // Exportar PDF
-  document.getElementById('exportar-btn').addEventListener('click', () => {
-    const resultCard = document.getElementById('result-card');
-    if (!resultCard.classList.contains('mostrar')) {
-      alert('Calcule o preço antes de exportar.');
-      return;
-    }
-
-    const opt = {
-      margin: 0.5,
-      filename: 'resultado-preco-venda.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().from(resultCard).set(opt).save();
-  });
-
-  // Ano rodapé
-  document.getElementById('ano-atual').textContent = new Date().getFullYear();
 });
