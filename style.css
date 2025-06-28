@@ -1,63 +1,72 @@
+/* Estilo geral */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
   max-width: 900px;
   margin: auto;
-  background: #f9f9f9;
+  background: #f4f4f4;
   padding: 20px;
+  line-height: 1.6;
+  color: #333;
 }
 
-h1, h2, h3 {
-  color: #333;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 4px;
+h1, h2 {
+  color: #2c3e50;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+section.bloco {
+  background: #fff;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
 label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  font-weight: bold;
 }
 
-input {
-  padding: 5px;
-  margin-left: 5px;
-  width: 100px;
-}
-
-#botoes {
-  margin-top: 20px;
+input[type="number"] {
+  padding: 6px;
+  margin-top: 4px;
+  width: 120px;
+  border-radius: 4px;
+  border: 1px solid #bbb;
 }
 
 button {
   padding: 10px 20px;
-  margin: 5px;
-  background: #4CAF50;
+  margin: 10px 10px 0 0;
+  font-weight: bold;
+  background-color: #4CAF50;
   border: none;
   color: white;
+  border-radius: 4px;
   cursor: pointer;
 }
 
 button:hover {
-  background: #388E3C;
+  background-color: #388e3c;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  background: #fff;
-}
-
-table, th, td {
-  border: 1px solid #ccc;
-}
-
-th, td {
-  padding: 8px;
-  text-align: left;
-}
-
-#resultado {
-  background: #fff;
+#resultados {
+  background: #ffffff;
+  margin-top: 30px;
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 2px solid #4CAF50;
+  border-radius: 8px;
+}
+
+#saida {
+  font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+  input[type="number"] {
+    width: 100%;
+  }
 }
