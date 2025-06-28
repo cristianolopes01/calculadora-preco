@@ -1,42 +1,45 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Preço de Venda</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Preço de Venda | Tausystem</title>
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <h1>Calculadora de Preço de Venda</h1>
+  <header class="topo">
+    <img src="logo-tausystem.png" alt="Logo Tausystem" class="logo" />
+    <h1>Calculadora de Preço de Venda</h1>
+  </header>
 
   <section class="input-section">
     <h2>Custos Fixos (mensal)</h2>
-    <input id="c-energia" type="number" placeholder="Energia elétrica">
-    <input id="c-agua" type="number" placeholder="Água">
-    <input id="c-telefonia" type="number" placeholder="Telefonia">
-    <input id="c-pessoal" type="number" placeholder="Pessoal">
-    <input id="c-socios" type="number" placeholder="Pró-labore / Sócios">
-    <input id="c-contabilidade" type="number" placeholder="Contabilidade">
-    <input id="c-depreciacao" type="number" placeholder="Depreciação">
-    <input id="c-internet" type="number" placeholder="Internet">
-    <input id="c-outros-fixos" type="number" placeholder="Outros Fixos">
+    <div class="campo"><label for="c-energia">Energia:</label><input id="c-energia" type="number" /></div>
+    <div class="campo"><label for="c-agua">Água:</label><input id="c-agua" type="number" /></div>
+    <div class="campo"><label for="c-telefonia">Telefonia:</label><input id="c-telefonia" type="number" /></div>
+    <div class="campo"><label for="c-pessoal">Pessoal:</label><input id="c-pessoal" type="number" /></div>
+    <div class="campo"><label for="c-socios">Pró-labore/Sócios:</label><input id="c-socios" type="number" /></div>
+    <div class="campo"><label for="c-contabilidade">Contabilidade:</label><input id="c-contabilidade" type="number" /></div>
+    <div class="campo"><label for="c-depreciacao">Depreciação:</label><input id="c-depreciacao" type="number" /></div>
+    <div class="campo"><label for="c-internet">Internet:</label><input id="c-internet" type="number" /></div>
+    <div class="campo"><label for="c-outros-fixos">Outros:</label><input id="c-outros-fixos" type="number" /></div>
   </section>
 
   <section class="input-section">
     <h2>Custos Variáveis (% do preço)</h2>
-    <input id="v-impostos" type="number" placeholder="Impostos (%)">
-    <input id="v-comissao" type="number" placeholder="Comissão (%)">
-    <input id="v-taxa-cartao" type="number" placeholder="Taxa do Cartão (%)">
-    <input id="v-descontos" type="number" placeholder="Descontos (%)">
+    <div class="campo"><label for="v-impostos">Impostos (%):</label><input id="v-impostos" type="number" /></div>
+    <div class="campo"><label for="v-comissao">Comissão (%):</label><input id="v-comissao" type="number" /></div>
+    <div class="campo"><label for="v-taxa-cartao">Taxa Cartão (%):</label><input id="v-taxa-cartao" type="number" /></div>
+    <div class="campo"><label for="v-descontos">Descontos (%):</label><input id="v-descontos" type="number" /></div>
   </section>
 
   <section class="input-section">
     <h2>Dados do Produto</h2>
-    <input id="p-custo-aquisicao" type="number" placeholder="Custo de Aquisição/Produção">
-    <input id="p-frete" type="number" placeholder="Frete por unidade">
-    <input id="p-vendas-mes" type="number" placeholder="Previsão de Vendas (mês)">
-    <input id="p-margem-lucro" type="number" placeholder="Margem de Lucro (%)">
+    <div class="campo"><label for="p-custo-aquisicao">Custo Aquisição:</label><input id="p-custo-aquisicao" type="number" /></div>
+    <div class="campo"><label for="p-frete">Frete Unitário:</label><input id="p-frete" type="number" /></div>
+    <div class="campo"><label for="p-vendas-mes">Vendas/Mês:</label><input id="p-vendas-mes" type="number" /></div>
+    <div class="campo"><label for="p-margem-lucro">Margem Lucro (%):</label><input id="p-margem-lucro" type="number" /></div>
   </section>
 
   <button id="calculate-btn">Calcular Preço de Venda</button>
