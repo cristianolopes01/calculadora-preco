@@ -39,6 +39,7 @@ input {
 
 button {
   margin-top: 1rem;
+  margin-right: 1rem;
   padding: 0.8rem 1.5rem;
   background: #0078D4;
   color: white;
