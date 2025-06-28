@@ -2,40 +2,31 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Calculadora Estratégica de Preço</title>
+  <title>Calculadora Estratégica</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="script.js" defer></script>
 </head>
 <body>
-  <h1>📦 Calculadora Estratégica de Preço</h1>
+  <h1>📦 Calculadora de Ponto de Equilíbrio</h1>
 
   <section class="bloco">
     <h2>Parâmetros</h2>
-    <label>Preço de Compra: <input type="number" id="preco-compra" /></label>
     <label>Preço de Venda: <input type="number" id="preco-venda" /></label>
+    <label>Preço de Compra (Custo Unitário): <input type="number" id="preco-compra" /></label>
+    <label>Impostos sobre Vendas (%): <input type="number" id="imposto-vendas" value="8" /></label>
+    <label>Margem de Contribuição Adicional (R$): <input type="number" id="margem-adicional" value="0" /></label>
     <label>Dias Úteis no Mês: <input type="number" id="dias-uteis" value="22" /></label>
-    <label>Imposto sobre Vendas (%): <input type="number" id="imposto-vendas" value="8" /></label>
   </section>
 
   <section class="bloco">
-    <h2>📘 Custos Fixos</h2>
+    <h2>Custos Fixos Mensais</h2>
     <label>Aluguel: <input type="number" id="fixo-aluguel" /></label>
-    <label>Energia: <input type="number" id="fixo-energia" /></label>
-    <label>Água: <input type="number" id="fixo-agua" /></label>
-    <label>Internet: <input type="number" id="fixo-internet" /></label>
-    <label>Pessoal: <input type="number" id="fixo-pessoal" /></label>
-    <label>Outros: <input type="number" id="fixo-outros" /></label>
-  </section>
-
-  <section class="bloco">
-    <h2>📙 Custos Variáveis (% do preço de venda)</h2>
-    <label>Produção: <input type="number" id="variavel-producao" /></label>
-    <label>Impostos: <input type="number" id="variavel-impostos" /></label>
-    <label>Comissões: <input type="number" id="variavel-comissoes" /></label>
-    <label>Frete: <input type="number" id="variavel-fretes" /></label>
-    <label>Outros: <input type="number" id="variavel-outros" /></label>
+    <label>Salários e Encargos: <input type="number" id="fixo-salarios" /></label>
+    <label>Energia Elétrica: <input type="number" id="fixo-energia" /></label>
+    <label>Internet e Telefonia: <input type="number" id="fixo-internet" /></label>
+    <label>Outros Custos Fixos: <input type="number" id="fixo-outros" /></label>
   </section>
 
   <section class="bloco">
@@ -44,16 +35,15 @@
     <button id="gerar-pdf">Gerar PDF</button>
   </section>
 
-  <section id="resultados" style="display: none;">
+  <section id="resultados" style="display:none;">
     <div id="relatorio-preco"></div>
     <div id="relatorio-fixos"></div>
-    <div id="relatorio-variaveis"></div>
     <div id="relatorio-equilibrio"></div>
   </section>
 
   <section class="bloco">
-    <h2>📊 Gráfico de Custos Variáveis</h2>
-    <canvas id="grafico-variaveis" height="200"></canvas>
+    <h2>Gráfico da Margem de Contribuição</h2>
+    <canvas id="grafico-margem" height="200"></canvas>
   </section>
 </body>
 </html>
