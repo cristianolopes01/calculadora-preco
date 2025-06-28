@@ -4,18 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculadora de Precificação</title>
-  <style>
-    body { font-family: sans-serif; padding: 2rem; transition: background 0.3s; }
-    .dark { background: #222; color: #eee; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { border: 1px solid #ccc; padding: 0.5rem; }
-    th { background: #f0f0f0; }
-    .dark th { background: #333; }
-    .total { font-weight: bold; background: #e0e0e0; }
-    .dark .total { background: #444; }
-    button { margin: 1rem 0; padding: 0.5rem 1rem; }
-    input { margin: 0.3rem; padding: 0.4rem; width: 5rem; }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -27,10 +16,12 @@
   <h3>📘 Custos Fixos</h3>
   <input class="fixo" data-nome="Aluguel" id="fixo1" type="number" placeholder="Aluguel" />
   <input class="fixo" data-nome="Salário" id="fixo2" type="number" placeholder="Salário" />
+  <input class="fixo" data-nome="Contabilidade" id="fixo3" type="number" placeholder="Contabilidade" />
 
   <h3>📙 Custos Variáveis (%)</h3>
   <input class="variavel" data-nome="Comissão" id="var1" type="text" placeholder="10%" />
   <input class="variavel" data-nome="Imposto" id="var2" type="text" placeholder="5%" />
+  <input class="variavel" data-nome="Frete" id="var3" type="text" placeholder="8%" />
 
   <br/><br/>
   <button id="calcular">📊 Calcular</button>
