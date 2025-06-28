@@ -1,5 +1,4 @@
 window.addEventListener('DOMContentLoaded', () => {
-  // Labels
   const fixosLabels = [
     'Aluguel', 'Energia Elétrica', 'Água', 'Telefonia',
     'Internet', 'Pessoal', 'Remuneração Sócios', 'Contabilidade',
@@ -13,89 +12,78 @@ window.addEventListener('DOMContentLoaded', () => {
     'Outros Custos Variáveis', 'Taxa de Cartão – Crédito'
   ];
 
-  // Gera campos fixos
   const fixosDiv = document.getElementById('fixos-container');
+  const variaveisDiv = document.getElementById('variaveis-container');
+
   fixosLabels.forEach((label, i) => {
-    const campo = document.createElement('div');
-    campo.className = 'campo';
-    campo.innerHTML = `<label>${label}: <input type="number" id="fixo${i}" /></label>`;
-    fixosDiv.appendChild(campo);
+    fixosDiv.innerHTML += `<div class="campo"><label>${label}: <input type="number" id="fixo${i}" /></label></div>`;
   });
 
-  // Gera campos variáveis
-  const variaveisDiv = document.getElementById('variaveis-container');
   variaveisLabels.forEach((label, i) => {
-    const campo = document.createElement('div');
-    campo.className = 'campo';
-    campo.innerHTML = `<label>${label}: <input type="number" id="variavel${i}" /></label>`;
-    variaveisDiv.appendChild(campo);
+    variaveisDiv.innerHTML += `<div class="campo"><label>${label}: <input type="number" id="variavel${i}" /></label></div>`;
   });
 });
 
 document.getElementById('calcular').addEventListener('click', () => {
-  const fixos = [], variaveis = [];
-  let totalFixos = 0, totalVariaveis = 0;
+  const fixos = [];
+  const variaveis = [];
+  let totalFixos = 0;
+  let totalVariaveis = 0;
 
-  // Coleta fixos
+  // Captura fixos
   document.querySelectorAll('#fixos-container input').forEach((el, i) => {
-    const val = parseFloat(el.value) || 0;
-    totalFixos += val;
-    fixos.push({ nome: el.parentElement.textContent.replace(':', '').trim(), valor: val });
+    const valor = parseFloat(el.value) || 0;
+    totalFixos += valor;
+    fixos.push({ nome: el.parentElement.textContent.replace(':', '').trim(), valor });
   });
-
   document.getElementById('total-fixos').textContent = totalFixos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-  // Coleta variáveis
+  // Captura variáveis
   document.querySelectorAll('#variaveis-container input').forEach((el, i) => {
-    const val = parseFloat(el.value) || 0;
-    totalVariaveis += val;
-    variaveis.push({ nome: el.parentElement.textContent.replace(':', '').trim(), valor: val });
+    const valor = parseFloat(el.value) || 0;
+    totalVariaveis += valor;
+    variaveis.push({ nome: el.parentElement.textContent.replace(':', '').trim(), valor });
   });
-
-  document.getElementById('total-variaveis').textContent = totalVariaveis.toFixed(2) + '%';
+  document.getElementById('total-variaveis').textContent = totalVariaveis.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   // Parâmetros
-  const freteUnit = parseFloat(document.getElementById('p-frete').value) || 0;
-  const vendas = parseFloat(document.getElementById('p-vendas').value) || 0;
+  const frete = parseFloat(document.getElementById('p-frete').value) || 0;
+  const vendasMes = parseFloat(document.getElementById('p-vendas').value) || 0;
   const margem = parseFloat(document.getElementById('p-margem').value) || 0;
-  if (!vendas || margem >= 100) return alert('Informe corretamente os parâmetros.');
 
-  const custoFixoUnit = totalFixos / vendas;
-  const somaPerc = (totalVariaveis + margem) / 100;
-  if (somaPerc >= 1) return alert('A soma dos percentuais ultrapassa 100%.');
+  if (!vendasMes || margem >= 100) return alert('Preencha as Vendas Mensais corretamente e verifique a Margem.');
 
-  const precoVenda = (custoFixoUnit + freteUnit) / (1 - somaPerc);
-  const lucro = precoVenda * (margem / 100);
+  const custoFixoUnit = totalFixos / vendasMes;
+  const custoVariavelUnit = totalVariaveis / vendasMes;
+  const somaCustos = custoFixoUnit + custoVariavelUnit + frete;
+  const precoVenda = somaCustos / (1 - margem / 100);
+  const valorLucro = precoVenda * (margem / 100);
 
   // Resultado
   const saida = document.getElementById('saida');
   saida.innerHTML = `
     <p><strong>💲 Preço de Venda Sugerido:</strong> R$ ${precoVenda.toFixed(2)}</p>
-    <p>📦 Frete por Unidade: R$ ${freteUnit.toFixed(2)}</p>
-    <p>🏢 Rateio Fixos por Unidade: R$ ${custoFixoUnit.toFixed(2)}</p>
-    <p>📉 Total de Variáveis: ${totalVariaveis.toFixed(2)}%</p>
-    <p>💰 Lucro Estimado: R$ ${lucro.toFixed(2)} (${margem.toFixed(2)}%)</p>
+    <p>📦 Frete Unitário: R$ ${frete.toFixed(2)}</p>
+    <p>🏢 Custo Fixo Unitário: R$ ${custoFixoUnit.toFixed(2)}</p>
+    <p>🔧 Custo Variável Unitário: R$ ${custoVariavelUnit.toFixed(2)}</p>
+    <p>💰 Lucro: R$ ${valorLucro.toFixed(2)} (${margem.toFixed(2)}%)</p>
   `;
 
   document.getElementById('resultado').style.display = 'block';
 
-  // Tabela fixos
-  let htmlFixos = `<h3>📘 Tabela de Custos Fixos</h3><table><tr><th>Item</th><th>Valor</th><th>Participação</th></tr>`;
-  fixos.forEach(f => {
-    const perc = totalFixos > 0 ? (f.valor / totalFixos) * 100 : 0;
-    htmlFixos += `<tr><td>${f.nome}</td><td>R$ ${f.valor.toFixed(2)}</td><td>${perc.toFixed(1)}%</td></tr>`;
-  });
-  htmlFixos += `<tr><td><strong>Total</strong></td><td><strong>R$ ${totalFixos.toFixed(2)}</strong></td><td><strong>100%</strong></td></tr></table>`;
-  document.getElementById('tabela-fixos').innerHTML = htmlFixos;
+  // Tabelas
+  const gerarTabela = (dados, total, titulo) => {
+    let html = `<h3>${titulo}</h3><table><thead><tr><th>Item</th><th>Valor (R$)</th><th>Participação</th></tr></thead><tbody>`;
+    dados.forEach(item => {
+      const perc = total > 0 ? (item.valor / total) * 100 : 0;
+      html += `<tr><td>${item.nome}</td><td>R$ ${item.valor.toFixed(2)}</td><td>${perc.toFixed(1)}%</td></tr>`;
+    });
+    html += `<tr><td><strong>Total</strong></td><td><strong>R$ ${total.toFixed(2)}</strong></td><td><strong>100%</strong></td></tr></tbody></table>`;
+    return html;
+  };
 
-  // Tabela variáveis
- let htmlVar = `<h3>📙 Tabela de Custos Variáveis</h3><table><tr><th>Item</th><th>Percentual</th><th>Participação</th></tr>`;
-  variaveis.forEach(v => {
-  const perc = totalVariaveis > 0 ? (v.valor / totalVariaveis) * 100 : 0;
-  htmlVar += `<tr><td>${v.nome}</td><td>${v.valor.toFixed(2)}%</td><td>${perc.toFixed(1)}%</td></tr>`;
-  });
-  htmlVar += `<tr><td><strong>Total</strong></td><td><strong>${totalVariaveis.toFixed(2)}%</strong></td><td><strong>100%</strong></td></tr></table>`;
-  document.getElementById('tabela-variaveis').innerHTML = htmlVar;
+  document.getElementById('tabela-fixos').innerHTML = gerarTabela(fixos, totalFixos, '📘 Custos Fixos');
+  document.getElementById('tabela-variaveis').innerHTML = gerarTabela(variaveis, totalVariaveis, '📙 Custos Variáveis');
 
   // Gráfico
   const ctx = document.getElementById('grafico').getContext('2d');
@@ -112,21 +100,26 @@ document.getElementById('calcular').addEventListener('click', () => {
         ]
       }]
     },
-    options: { plugins: { legend: { position: 'bottom' } } }
+    options: {
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
   });
 });
 
-// Botões auxiliares
+// Limpar
 document.getElementById('limpar').addEventListener('click', () => {
-  document.querySelectorAll('input').forEach(i => i.value = '');
+  document.querySelectorAll('input').forEach(el => el.value = '');
   document.getElementById('total-fixos').textContent = 'R$ 0,00';
-  document.getElementById('total-variaveis').textContent = '0%';
+  document.getElementById('total-variaveis').textContent = 'R$ 0,00';
   document.getElementById('saida').innerHTML = '';
+  document.getElementById('resultado').style.display = 'none';
   document.getElementById('tabela-fixos').innerHTML = '';
   document.getElementById('tabela-variaveis').innerHTML = '';
-  document.getElementById('resultado').style.display = 'none';
 });
 
+// Exportar PDF
 document.getElementById('exportar').addEventListener('click', () => {
   const area = document.getElementById('resultado');
   html2pdf().set({
