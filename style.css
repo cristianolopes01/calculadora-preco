@@ -1,108 +1,57 @@
 body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  max-width: 1100px;
-  margin: auto;
-  background-color: #f7f7f7;
+  font-family: 'Segoe UI', sans-serif;
+  max-width: 950px;
+  margin: 30px auto;
   padding: 20px;
+  background: #f4f8fb;
   color: #333;
-  line-height: 1.6;
 }
-
-h1 {
-  text-align: center;
+h1, h2, h3 {
   color: #2c3e50;
-  margin-bottom: 30px;
 }
-
-h2, h3 {
-  color: #2c3e50;
-  margin-top: 30px;
+input, select {
+  margin-top: 5px;
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
   margin-bottom: 10px;
 }
-
-section.bloco {
-  background: #fff;
-  padding: 20px;
-  margin-top: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
 label {
   display: block;
-  margin-bottom: 14px;
-  font-weight: bold;
+  font-weight: 600;
 }
-
-input[type="number"] {
-  padding: 6px;
-  margin-top: 4px;
-  margin-left: 8px;
-  width: 150px;
-  border-radius: 4px;
-  border: 1px solid #bbb;
-  font-size: 14px;
-}
-
 button {
-  padding: 10px 20px;
-  margin-top: 10px;
-  margin-right: 10px;
-  font-weight: bold;
-  background-color: #4CAF50;
+  margin: 5px 10px 15px 0;
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: #fff;
   border: none;
-  color: white;
-  border-radius: 4px;
+  font-weight: bold;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 15px;
 }
-
 button:hover {
-  background-color: #388e3c;
+  background-color: #2980b9;
 }
-
-#resultados {
-  margin-top: 30px;
+.bloco {
+  margin-bottom: 30px;
   padding: 20px;
-  background: #ffffff;
-  border: 2px solid #4CAF50;
+  background: #fff;
   border-radius: 8px;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
 }
-
-#resultados table {
+table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 12px;
-  font-size: 15px;
+  margin-top: 10px;
 }
-
-#resultados th,
-#resultados td {
+td, th {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
 }
-
-#resultados th {
-  background-color: #eeeeee;
-  font-weight: bold;
-}
-
-#resultados strong {
-  color: #2c3e50;
-}
-
-@media (max-width: 768px) {
-  input[type="number"] {
-    width: 100%;
-    margin-left: 0;
-  }
-
-  label {
-    margin-bottom: 16px;
-  }
-
-  table {
-    font-size: 14px;
-  }
+th {
+  background-color: #ecf0f1;
 }
